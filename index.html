@@ -78,6 +78,9 @@
     .req{color:var(--secondary);margin-left:4px}
     .progress{height:4px;background:#eef2f7;position:relative}
     .bar{height:100%;width:0;background:linear-gradient(90deg, var(--primary), #67c8ff);transition:width .25s}
+    .range-row{display:flex;align-items:center;gap:12px}
+    .range-row input[type="range"]{flex:1}
+    .range-row output{min-width:24px;text-align:center;font-weight:600}
   </style>
 </head>
 <body>
@@ -99,7 +102,7 @@
       </header>
       <div class="progress" aria-hidden="true"><div class="bar" id="progressBar"></div></div>
 
-      <!-- IMPORTANT: set action to your n8n webhook URL -->
+      <!-- TODO: set your real webhook URL -->
       <form id="wizardForm" method="post" enctype="application/x-www-form-urlencoded" novalidate
             action="https://YOUR-N8N.DOMAIN/webhook/application-form-external">
 
@@ -129,8 +132,22 @@
               <div class="hint">Optional</div>
             </div>
             <div>
-              <label for="industry">Industry</label>
-              <input type="text" id="industry" name="industry" />
+              <label for="industry">Industry Sector<span class="req">*</span></label>
+              <select id="industry" name="industry" required>
+                <option value="">Select</option>
+                <option>Technology</option>
+                <option>Healthcare</option>
+                <option>Manufacturing</option>
+                <option>Real Estate</option>
+                <option>Retail</option>
+                <option>Restaurant</option>
+                <option>Construction</option>
+                <option>Transportation</option>
+                <option>Agriculture</option>
+                <option>Energy</option>
+                <option>Other</option>
+              </select>
+              <div class="error" data-error-for="industry">Please select an industry.</div>
             </div>
           </div>
         </section>
@@ -145,12 +162,29 @@
               <input type="text" id="funding_amount" name="funding_amount" placeholder="e.g., $500,000" />
             </div>
             <div>
-              <label for="loan_term">Preferred Loan Term</label>
-              <input type="text" id="loan_term" name="loan_term" placeholder="e.g., 5--10 years" />
+              <label for="loan_term">Desired Loan Term<span class="req">*</span></label>
+              <select id="loan_term" name="loan_term" required>
+                <option value="">Select</option>
+                <option>Short-term (less than 2 years)</option>
+                <option>Medium-term (2-5 years)</option>
+                <option>Long-term (5+ years)</option>
+              </select>
+              <div class="error" data-error-for="loan_term">Please select a loan term.</div>
             </div>
             <div class="grid-item" style="grid-column:1/-1">
-              <label for="funding_purpose">Funding Purpose</label>
-              <textarea id="funding_purpose" name="funding_purpose" placeholder="Describe how funds will be used"></textarea>
+              <label for="funding_purpose_select">Funding Purpose<span class="req">*</span></label>
+              <select id="funding_purpose_select" name="funding_purpose" required>
+                <option value="">Select</option>
+                <option>Business Expansion</option>
+                <option>Equipment Purchase</option>
+                <option>Inventory Purchase</option>
+                <option>Working Capital</option>
+                <option>Debt Consolidation</option>
+                <option>Real Estate Purchase</option>
+                <option>Startup Costs</option>
+                <option>Other</option>
+              </select>
+              <div class="error" data-error-for="funding_purpose">Please select a funding purpose.</div>
             </div>
             <div class="grid-item" style="grid-column:1/-1">
               <label for="project_description">Project Brief</label>
@@ -174,11 +208,31 @@
             </div>
             <div>
               <label for="credit_score_range">Credit Score Range</label>
-              <input type="text" id="credit_score_range" name="credit_score_range" placeholder="e.g., 680--720" />
+              <select id="credit_score_range" name="credit_score_range">
+                <option value="">Select</option>
+                <option>Excellent (720+)</option>
+                <option>Good (680-719)</option>
+                <option>Fair (620-679)</option>
+                <option>Below Fair (619 or less)</option>
+              </select>
             </div>
             <div>
-              <label for="bank_relationship">Banking Relationship</label>
-              <input type="text" id="bank_relationship" name="bank_relationship" placeholder="e.g., Primary with ABC Bank" />
+              <label for="bank_relationship">Existing Relationship with Bank</label>
+              <select id="bank_relationship" name="bank_relationship">
+                <option value="">Select</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </div>
+            <div class="grid-item" style="grid-column:1/-1">
+              <label for="local_lender_pref">Preference for Local Lender (1–5)</label>
+              <div class="range-row">
+                <span style="font-size:13px;color:#666">1</span>
+                <input type="range" id="local_lender_pref" name="local_lender_pref" min="1" max="5" step="1" value="3" />
+                <span style="font-size:13px;color:#666">5</span>
+                <output id="local_lender_pref_out">3</output>
+              </div>
+              <div class="hint">1 = I don't really care, 5 = I only want to work with local lenders</div>
             </div>
           </div>
         </section>
@@ -216,8 +270,8 @@
               <label for="collateral_available">Collateral Available</label>
               <select id="collateral_available" name="collateral_available">
                 <option value="">Select</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
+                <option>Yes</option>
+                <option>No</option>
               </select>
             </div>
             <div class="grid-item" style="grid-column:1/-1">
@@ -238,7 +292,6 @@
 
           <div class="banner">By submitting this form, you will receive a personal link via email to upload documents later.</div>
 
-          <!-- Dynamic Google Docs content will be injected here -->
           <div class="agreement" id="agreementBox" tabindex="0" aria-label="User Agreement">
             <div id="agreementContent">Loading the agreement…</div>
           </div>
@@ -254,7 +307,6 @@
           <input type="hidden" name="agreement_export_url" value="https://docs.google.com/document/d/1w5F60QgSQGq4lDhQSO5AhAHq-F_SdyHXKt0egy26KmE/export?format=html" />
         </section>
 
-        <!-- Actions -->
         <div class="actions">
           <div class="left">
             <button type="button" class="btn secondary" id="prevBtn" style="visibility:hidden">Back</button>
@@ -311,8 +363,16 @@
         if (idx === 0) {
           const full_name = form.full_name.value.trim();
           const email = form.email.value.trim();
+          const industry = form.industry.value;
           if (!full_name) { showError('full_name', true); ok = false; } else showError('full_name', false);
           if (!/^\S+@\S+\.\S+$/.test(email)) { showError('email', true); ok = false; } else showError('email', false);
+          if (!industry) { showError('industry', true); ok = false; } else showError('industry', false);
+        }
+        if (idx === 1) {
+          const loanTerm = form.loan_term.value;
+          const purpose = form.funding_purpose.value;
+          if (!loanTerm) { showError('loan_term', true); ok = false; } else showError('loan_term', false);
+          if (!purpose) { showError('funding_purpose', true); ok = false; } else showError('funding_purpose', false);
         }
         if (idx === 5) {
           const accepted = form.user_agreement_accepted.checked;
@@ -368,13 +428,14 @@
       });
 
       form.addEventListener('submit', (e) => {
-        if (!validateStep(0) || !validateStep(5)) {
+        if (!validateStep(0) || !validateStep(1) || !validateStep(5)) {
           e.preventDefault();
-          current = !validateStep(0) ? 0 : 5;
+          if (!validateStep(0)) current = 0;
+          else if (!validateStep(1)) current = 1;
+          else current = 5;
           updateUI();
           return;
         }
-        // Allow normal form submit to n8n webhook (action attribute)
         localStorage.removeItem(STORAGE_KEY);
       });
 
@@ -410,6 +471,15 @@
         }
       }
       loadAgreement();
+
+      // Range output sync
+      const range = document.getElementById('local_lender_pref');
+      const out = document.getElementById('local_lender_pref_out');
+      if (range && out) {
+        const sync = () => out.value = range.value;
+        range.addEventListener('input', sync);
+        sync();
+      }
     })();
   </script>
 </body>
