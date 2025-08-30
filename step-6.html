@@ -5,62 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Step 6 — User Agreement</title>
   <style>
-    /* Basic responsive, dark theme UI */
+    /* Minimal responsive UI */
     :root {
-      --bg: #0b0c10; --panel: #121318; --text: #e8eaf0; --muted: #a8b0be; --accent: #4da3ff; --ok: #28c76f; --warn: #ff9f43; --err: #ea5455;
+      --bg: #0b0c10; --panel: #121318; --text: #e8eaf0; --muted: #a8b0be; --accent: #4da3ff; --ok: #28c76f; --err: #ea5455;
     }
     html, body { margin:0; padding:0; background:var(--bg); color:var(--text); font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
     .wrap { max-width: 880px; margin: 0 auto; padding: 16px; }
     .card { background: var(--panel); border-radius: 14px; padding: 16px; box-shadow: 0 6px 24px rgba(0,0,0,.35); }
     h1 { font-size: 20px; margin: 0 0 12px; }
-    .agreement {
-      height: 60vh; border: 1px solid #222631; border-radius: 10px; overflow: hidden; background: #0f1117;
-    }
-    .iframe-box { position: relative; width: 100%; height: 100%; }
-    iframe {
-      position:absolute; inset:0; width:100%; height:100%;
-      border:0; background:#fff; border-radius: 10px;
-    }
-    .controls { display:flex; align-items:center; gap:12px; margin-top: 14px; flex-wrap: wrap; }
+    .agreement { height: 60vh; border: 1px solid #222631; border-radius: 10px; overflow: hidden; background: #0f1117; }
+    iframe { width:100%; height:100%; border:0; background:#fff; }
+    .controls { display:flex; align-items:center; gap:12px; margin-top:14px; flex-wrap:wrap; }
     .controls label { display:flex; align-items:flex-start; gap:10px; cursor:pointer; color: var(--muted); }
-    .controls input[type="checkbox"] { margin-top: 3px; transform: scale(1.15); }
-    .btn {
-      appearance: none; border:0; background: var(--accent); color:#081018;
-      padding: 10px 16px; border-radius:10px; font-weight:600; cursor:pointer;
-      transition: transform .08s ease, filter .08s ease; white-space: nowrap;
-    }
-    .btn[disabled] { filter: grayscale(1) brightness(.6); cursor: not-allowed; }
+    .controls input[type="checkbox"] { margin-top:3px; transform: scale(1.15); }
+    .btn { appearance:none; border:0; background:var(--accent); color:#081018; padding:10px 16px; border-radius:10px; font-weight:600; cursor:pointer; }
+    .btn[disabled] { filter: grayscale(1) brightness(.6); cursor:not-allowed; }
     .note { font-size: 13px; color: var(--muted); margin-top: 8px; }
     .status { margin-top: 10px; font-size: 14px; }
     .status.ok { color: var(--ok); }
-    .status.warn { color: var(--warn); }
     .status.err { color: var(--err); }
-    .meta { font-size: 12px; color: var(--muted); margin-top: 6px; }
-    @media (max-width: 480px) {
-      .agreement { height: 55vh; }
-      .btn { width: 100%; text-align: center; }
-    }
+    @media (max-width: 480px) { .agreement { height: 55vh; } .btn { width:100%; } }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
       <h1>User Agreement</h1>
-      <div class="agreement">
-        <div class="iframe-box">
-          <!-- Prefer direct "uc?export=download" link to serve the raw HTML from Google Drive -->
-          <iframe
-            id="agreementFrame"
-            title="SOFTWARE USE AGREEMENT"
-            src="https://drive.google.com/uc?export=download&id=19kvs_7dhpp9-oliOLDwwFOK__wWLQws7"
-            sandbox="allow-same-origin"
-            referrerpolicy="no-referrer"
-          ></iframe>
-        </div>
-      </div>
 
-      <div class="meta">
-        This document is loaded directly from Google Drive. Any updates take effect immediately.
+      <!-- This iframe shows the Google Drive file via "preview" (most reliable) -->
+      <div class="agreement">
+        <iframe
+          title="SOFTWARE USE AGREEMENT"
+          src="https://drive.google.com/file/d/19kvs_7dhpp9-oliOLDwwFOK__wWLQws7/preview"
+          sandbox="allow-same-origin"
+          referrerpolicy="no-referrer"
+        ></iframe>
       </div>
 
       <div class="controls">
@@ -71,20 +50,18 @@
         <button class="btn" id="submitBtn" disabled>Submit</button>
       </div>
 
-      <div class="note">
-        By clicking “Submit,” you agree to the current version of the Agreement displayed above.
-      </div>
+      <div class="note">By clicking “Submit,” you agree to the current version shown above.</div>
       <div id="status" class="status" aria-live="polite"></div>
     </div>
   </div>
 
   <script>
-    // Front-end logic: enable submit on checkbox, POST to backend, handle errors
+    // Front-end: enable submit, send minimal payload to your backend
     const agreeCheckbox = document.getElementById('agreeCheckbox');
     const submitBtn = document.getElementById('submitBtn');
     const statusEl = document.getElementById('status');
 
-    // Replace with your real session identifier wiring
+    // Replace with your real session id logic if needed
     const sessionId = new URLSearchParams(location.search).get('sid') || crypto.randomUUID();
 
     agreeCheckbox.addEventListener('change', () => {
@@ -98,34 +75,29 @@
 
       submitBtn.disabled = true;
       statusEl.textContent = 'Submitting...';
-      statusEl.className = 'status';
 
       try {
-        // Send minimal payload; backend/n8n will fetch the HTML and compute hash
         const res = await fetch('/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             sessionId,
             agree: true,
-            // Include the Drive file id or URL so backend knows what to hash
             agreement: {
               driveFileId: '19kvs_7dhpp9-oliOLDwwFOK__wWLQws7',
-              driveUrl: 'https://drive.google.com/uc?export=download&id=19kvs_7dhpp9-oliOLDwwFOK__wWLQws7'
+              drivePreviewUrl: 'https://drive.google.com/file/d/19kvs_7dhpp9-oliOLDwwFOK__wWLQws7/preview',
+              driveRawUrl: 'https://drive.google.com/uc?export=download&id=19kvs_7dhpp9-oliOLDwwFOK__wWLQws7'
             }
           })
         });
 
-        if (!res.ok) {
-          const text = await res.text().catch(() => '');
-          throw new Error(text || `HTTP ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        await res.json().catch(() => ({}));
 
-        const data = await res.json().catch(() => ({}));
         statusEl.textContent = 'Submitted. Thank you!';
         statusEl.className = 'status ok';
-      } catch (err) {
-        console.error(err);
+      } catch (e) {
+        console.error(e);
         statusEl.textContent = 'Submission failed. Please try again.';
         statusEl.className = 'status err';
       } finally {
