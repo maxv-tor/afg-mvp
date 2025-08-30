@@ -13,8 +13,8 @@
     .wrap { max-width: 880px; margin: 0 auto; padding: 16px; }
     .card { background: var(--panel); border-radius: 14px; padding: 16px; box-shadow: 0 6px 24px rgba(0,0,0,.35); }
     h1 { font-size: 20px; margin: 0 0 12px; }
-    .agreement { height: 60vh; border: 1px solid #222631; border-radius: 10px; overflow: hidden; background: #0f1117; }
-    iframe { width:100%; height:100%; border:0; background:#fff; }
+    .agreementBox { height: 60vh; border: 1px solid #222631; border-radius: 10px; overflow: auto; background: #fff; }
+    .agreementInner { padding: 16px; color: #111; }
     .controls { display:flex; align-items:center; gap:12px; margin-top:14px; flex-wrap:wrap; }
     .controls label { display:flex; align-items:flex-start; gap:10px; cursor:pointer; color: var(--muted); }
     .controls input[type="checkbox"] { margin-top:3px; transform: scale(1.15); }
@@ -24,7 +24,7 @@
     .status { margin-top: 10px; font-size: 14px; }
     .status.ok { color: var(--ok); }
     .status.err { color: var(--err); }
-    @media (max-width: 480px) { .agreement { height: 55vh; } .btn { width:100%; } }
+    @media (max-width: 480px) { .agreementBox { height: 55vh; } .btn { width:100%; } }
   </style>
 </head>
 <body>
@@ -32,14 +32,9 @@
     <div class="card">
       <h1>User Agreement</h1>
 
-      <!-- This iframe shows the Google Drive file via "preview" (most reliable) -->
-      <div class="agreement">
-        <iframe
-          title="SOFTWARE USE AGREEMENT"
-          src="https://drive.google.com/file/d/19kvs_7dhpp9-oliOLDwwFOK__wWLQws7/preview"
-          sandbox="allow-same-origin"
-          referrerpolicy="no-referrer"
-        ></iframe>
+      <!-- Container for the Google Docs exported HTML -->
+      <div class="agreementBox">
+        <div id="agreement" class="agreementInner">Loading the agreement…</div>
       </div>
 
       <div class="controls">
@@ -56,12 +51,33 @@
   </div>
 
   <script>
-    // Front-end: enable submit, send minimal payload to your backend
+    // 1) Load Google Docs as raw HTML via export endpoint
+    const DOC_EXPORT_HTML = 'https://docs.google.com/document/d/1w5F60QgSQGq4lDhQSO5AhAHq-F_SdyHXKt0egy26KmE/export?format=html';
+
+    async function loadAgreement() {
+      const el = document.getElementById('agreement');
+      try {
+        const res = await fetch(DOC_EXPORT_HTML, { credentials: 'omit', mode: 'cors' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        let html = await res.text();
+
+        // Basic sanitization: strip <script> tags for safety
+        html = html.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+
+        // Optional: unwrap Google Docs boilerplate if present
+        el.innerHTML = html;
+      } catch (e) {
+        console.error(e);
+        el.innerHTML = '<div style="color:#ea5455">Failed to load the agreement. Make sure the document is shared as “Anyone with the link — Viewer”.</div>';
+      }
+    }
+
+    loadAgreement();
+
+    // 2) Checkbox + submit
     const agreeCheckbox = document.getElementById('agreeCheckbox');
     const submitBtn = document.getElementById('submitBtn');
     const statusEl = document.getElementById('status');
-
-    // Replace with your real session id logic if needed
     const sessionId = new URLSearchParams(location.search).get('sid') || crypto.randomUUID();
 
     agreeCheckbox.addEventListener('change', () => {
@@ -84,16 +100,15 @@
             sessionId,
             agree: true,
             agreement: {
-              driveFileId: '19kvs_7dhpp9-oliOLDwwFOK__wWLQws7',
-              drivePreviewUrl: 'https://drive.google.com/file/d/19kvs_7dhpp9-oliOLDwwFOK__wWLQws7/preview',
-              driveRawUrl: 'https://drive.google.com/uc?export=download&id=19kvs_7dhpp9-oliOLDwwFOK__wWLQws7'
+              type: 'gdocs',
+              exportHtmlUrl: DOC_EXPORT_HTML,
+              docId: '1w5F60QgSQGq4lDhQSO5AhAHq-F_SdyHXKt0egy26KmE'
             }
           })
         });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         await res.json().catch(() => ({}));
-
         statusEl.textContent = 'Submitted. Thank you!';
         statusEl.className = 'status ok';
       } catch (e) {
