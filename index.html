@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Funding Application — 6-Step Wizard</title>
+  <title>Funding Application -- 6-Step Wizard</title>
   <meta name="color-scheme" content="light">
   <style>
     :root{
@@ -86,7 +86,7 @@
       <header>
         <div>
           <h1>Funding Application</h1>
-        <p>Complete the 6-step form. You can review before submitting.</p>
+          <p>Complete the 6-step form. You can review before submitting.</p>
         </div>
         <div class="steps" aria-label="Steps">
           <span class="step-dot" data-step="0"></span>
@@ -99,12 +99,13 @@
       </header>
       <div class="progress" aria-hidden="true"><div class="bar" id="progressBar"></div></div>
 
+      <!-- IMPORTANT: set action to your n8n webhook URL -->
       <form id="wizardForm" method="post" enctype="application/x-www-form-urlencoded" novalidate
-            action="<!-- TODO: set your n8n webhook URL, e.g. https://n8n.example.com/webhook/application-form-external -->">
+            action="https://YOUR-N8N.DOMAIN/webhook/application-form-external">
 
         <!-- Step 1: Contact Information -->
         <section class="step active" data-step="0">
-          <h2>Step 1 — Contact Information</h2>
+          <h2>Step 1 -- Contact Information</h2>
           <p class="desc">Tell us how we can reach you.</p>
           <div class="grid grid-2">
             <div>
@@ -136,7 +137,7 @@
 
         <!-- Step 2: Funding Needs -->
         <section class="step" data-step="1">
-          <h2>Step 2 — Funding Needs</h2>
+          <h2>Step 2 -- Funding Needs</h2>
           <p class="desc">Your expected amount and purpose.</p>
           <div class="grid grid-2">
             <div>
@@ -145,7 +146,7 @@
             </div>
             <div>
               <label for="loan_term">Preferred Loan Term</label>
-              <input type="text" id="loan_term" name="loan_term" placeholder="e.g., 5–10 years" />
+              <input type="text" id="loan_term" name="loan_term" placeholder="e.g., 5--10 years" />
             </div>
             <div class="grid-item" style="grid-column:1/-1">
               <label for="funding_purpose">Funding Purpose</label>
@@ -160,7 +161,7 @@
 
         <!-- Step 3: Business & Financials -->
         <section class="step" data-step="2">
-          <h2>Step 3 — Business & Financials</h2>
+          <h2>Step 3 -- Business & Financials</h2>
           <p class="desc">High-level business and credit profile.</p>
           <div class="grid grid-2">
             <div>
@@ -173,7 +174,7 @@
             </div>
             <div>
               <label for="credit_score_range">Credit Score Range</label>
-              <input type="text" id="credit_score_range" name="credit_score_range" placeholder="e.g., 680–720" />
+              <input type="text" id="credit_score_range" name="credit_score_range" placeholder="e.g., 680--720" />
             </div>
             <div>
               <label for="bank_relationship">Banking Relationship</label>
@@ -184,7 +185,7 @@
 
         <!-- Step 4: Project Location -->
         <section class="step" data-step="3">
-          <h2>Step 4 — Project Location</h2>
+          <h2>Step 4 -- Project Location</h2>
           <p class="desc">Where the project will take place.</p>
           <div class="grid grid-2">
             <div class="grid-item" style="grid-column:1/-1">
@@ -208,7 +209,7 @@
 
         <!-- Step 5: Preferences & Collateral -->
         <section class="step" data-step="4">
-          <h2>Step 5 — Preferences & Collateral</h2>
+          <h2>Step 5 -- Preferences & Collateral</h2>
           <p class="desc">Your preferences and available collateral, if any.</p>
           <div class="grid grid-2">
             <div>
@@ -232,23 +233,14 @@
 
         <!-- Step 6: Agreement & Submit -->
         <section class="step" data-step="5">
-          <h2>Step 6 — Agreement</h2>
+          <h2>Step 6 -- Agreement</h2>
           <p class="desc">Please read and accept to proceed.</p>
 
           <div class="banner">By submitting this form, you will receive a personal link via email to upload documents later.</div>
 
+          <!-- Dynamic Google Docs content will be injected here -->
           <div class="agreement" id="agreementBox" tabindex="0" aria-label="User Agreement">
-            <!-- TODO: Replace this placeholder with your agreement text -->
-            <p><strong>User Agreement</strong></p>
-            <p>
-              This Funding Application is provided by Altfunds Global. By checking the box below,
-              you confirm that the information provided is accurate to the best of your knowledge
-              and you authorize Altfunds Global to contact you regarding your application.
-            </p>
-            <p>
-              You also acknowledge that submission does not guarantee approval and that additional
-              documentation may be required. Data will be processed according to our Privacy Policy.
-            </p>
+            <div id="agreementContent">Loading the agreement…</div>
           </div>
 
           <div style="margin-top:12px;display:flex;align-items:flex-start;gap:10px">
@@ -256,18 +248,20 @@
             <label for="user_agreement_accepted" style="font-weight:600">I have read and accept the User Agreement<span class="req">*</span></label>
           </div>
           <div class="error" data-error-for="user_agreement_accepted">You must accept the agreement to continue.</div>
+
+          <!-- Hidden fields to pass agreement meta to backend -->
+          <input type="hidden" name="agreement_doc_id" value="1w5F60QgSQGq4lDhQSO5AhAHq-F_SdyHXKt0egy26KmE" />
+          <input type="hidden" name="agreement_export_url" value="https://docs.google.com/document/d/1w5F60QgSQGq4lDhQSO5AhAHq-F_SdyHXKt0egy26KmE/export?format=html" />
         </section>
 
         <!-- Actions -->
         <div class="actions">
           <div class="left">
-            <!-- Hide Back initially so it doesn't flash before JS init -->
             <button type="button" class="btn secondary" id="prevBtn" style="visibility:hidden">Back</button>
           </div>
           <div class="right">
             <button type="button" class="btn primary" id="saveBtn" title="Save progress locally">Save Progress</button>
             <button type="button" class="btn primary" id="nextBtn">Next</button>
-            <!-- Keep Submit hidden by default so it never shows on step 1 if JS is delayed -->
             <button type="submit" class="btn primary filled" id="submitBtn" style="display:none">Submit</button>
           </div>
         </div>
@@ -297,7 +291,6 @@
           d.classList.toggle('done', i < current);
         });
 
-        // Back hidden on first step
         prevBtn.style.visibility = current === 0 ? 'hidden' : 'visible';
 
         const isLast = current === TOTAL_STEPS - 1;
@@ -381,6 +374,7 @@
           updateUI();
           return;
         }
+        // Allow normal form submit to n8n webhook (action attribute)
         localStorage.removeItem(STORAGE_KEY);
       });
 
@@ -398,15 +392,24 @@
       restore();
       updateUI();
 
-      form.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          const isTextArea = e.target && e.target.tagName === 'TEXTAREA';
-          if (!isTextArea) {
-            e.preventDefault();
-            if (current < TOTAL_STEPS - 1) go(1);
-          }
+      // Load Google Docs Agreement into Step 6
+      const DOC_ID = '1w5F60QgSQGq4lDhQSO5AhAHq-F_SdyHXKt0egy26KmE';
+      const EXPORT_HTML = `https://docs.google.com/document/d/${DOC_ID}/export?format=html`;
+
+      async function loadAgreement() {
+        const el = document.getElementById('agreementContent');
+        try {
+          const res = await fetch(EXPORT_HTML, { credentials: 'omit', mode: 'cors' });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          let html = await res.text();
+          html = html.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+          el.innerHTML = html;
+        } catch (e) {
+          console.error(e);
+          el.innerHTML = '<div style="color:#d92d20">Failed to load the agreement. Ensure the document is shared as “Anyone with the link — Viewer”.</div>';
         }
-      });
+      }
+      loadAgreement();
     })();
   </script>
 </body>
