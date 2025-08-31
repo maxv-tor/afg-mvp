@@ -299,9 +299,74 @@
         });
       });
       
-      // Form submission
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
+     // Form submission - REAL implementation
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Basic validation
+    let isValid = true;
+    const email = document.getElementById('email').value;
+    const fullName = document.getElementById('full_name').value;
+    
+    if (!fullName) {
+        document.querySelector('[data-error-for="full_name"]').classList.add('show');
+        isValid = false;
+    } else {
+        document.querySelector('[data-error-for="full_name"]').classList.remove('show');
+    }
+    
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+        document.querySelector('[data-error-for="email"]').classList.add('show');
+        isValid = false;
+    } else {
+        document.querySelector('[data-error-for="email"]').classList.remove('show');
+    }
+    
+    // Check if at least one document is added
+    const hasFiles = Array.from(document.querySelectorAll('input[type="file"]')).some(input => input.files.length > 0);
+    if (!hasFiles) {
+        uploadStatus.textContent = 'Please upload at least one document.';
+        uploadStatus.className = 'upload-status error';
+        isValid = false;
+    } else {
+        uploadStatus.className = 'upload-status';
+        uploadStatus.textContent = '';
+    }
+    
+    if (!isValid) return;
+    
+    // Disable submit button
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.text极速Content = 'Uploading...';
+    
+    // REAL form submission to n8n
+    const formData = new FormData(form);
+    
+    // Замените URL на ваш настоящий webhook в n8n
+    fetch('https://contentlabs.app.n8n.cloud/webhook/upload-docs-dKv46283Str', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            uploadStatus.textContent = 'Documents uploaded successfully! Your application is now complete.';
+            uploadStatus.className = 'upload-status success';
+        } else {
+            uploadStatus.textContent = 'Error: ' + (data.message || 'Upload failed');
+            uploadStatus.className = 'upload-status error';
+        }
+    })
+    .catch(error => {
+        uploadStatus.textContent = 'Network error: ' + error.message;
+        uploadStatus.className = 'upload-status error';
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Upload Documents';
+    });
+});
         
         // Basic validation
         let isValid = true;
