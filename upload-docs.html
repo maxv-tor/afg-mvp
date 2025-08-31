@@ -146,6 +146,7 @@
         <form id="documentUploadForm" method="post" enctype="multipart/form-data" 
               action="https://contentlabs.app.n8n.cloud/webhook/upload-docs-dKv46283Str">
           <input type="hidden" id="client_email" name="client_email" value="">
+          <input type="hidden" id="submission_id" name="submission_id" value="">
           
           <div class="grid grid-2">
             <div>
@@ -250,6 +251,10 @@
       const clientEmailInput = document.getElementById('client_email');
 
       // Prefill email from URL
+      const submissionIdParam = urlParams.get('submission_id');
+      if (submissionIdParam) {
+      document.getElementById('submission_id').value = submissionIdParam;
+      }
       const urlParams = new URLSearchParams(window.location.search);
       const emailParam = urlParams.get('email');
       if (emailParam) {
