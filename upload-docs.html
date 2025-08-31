@@ -80,8 +80,6 @@
     .range-row{display:flex;align-items:center;gap:12px}
     .range-row input[type="range"]{flex:1}
     .range-row output{min-width:24px;text-align:center;font-weight:600}
-    
-    /* Custom styles for document upload */
     .document-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
     .document-table th { text-align: left; padding: 10px; border-bottom: 2px solid var(--border); }
     .document-table td { padding: 10px; border-bottom: 1px solid var(--border-soft); }
@@ -145,8 +143,8 @@
           Your application has been received. To continue processing your request, please upload the required documents below.
         </div>
 
-<form id="documentUploadForm" method="post" enctype="multipart/form-data" 
-      action="https://contentlabs.app.n8n.cloud/webhook/upload-docs-dKv46283Str">
+        <form id="documentUploadForm" method="post" enctype="multipart/form-data" 
+              action="https://contentlabs.app.n8n.cloud/webhook/upload-docs-dKv46283Str">
           <input type="hidden" id="client_email" name="client_email" value="">
           
           <div class="grid grid-2">
@@ -247,51 +245,63 @@
       const addMoreBtn = document.getElementById('addMoreBtn');
       const documentsTable = document.getElementById('documentsTable');
       const uploadStatus = document.getElementById('uploadStatus');
-      
-      // Get email from URL parameters if available
+      const submitBtn = document.getElementById('submitBtn');
+      const emailInput = document.getElementById('email');
+      const clientEmailInput = document.getElementById('client_email');
+
+      // Prefill email from URL
       const urlParams = new URLSearchParams(window.location.search);
       const emailParam = urlParams.get('email');
       if (emailParam) {
-        document.getElementById('email').value = emailParam;
-        document.getElementById('client_email').value = emailParam;
+        emailInput.value = emailParam;
+        clientEmailInput.value = emailParam;
       }
-      
-      // File input change handler
-      document.querySelectorAll('input[type="file"]').forEach(input => {
-        input.addEventListener('change', function() {
-          const fileName = this.files[0] ? this.files[0].name : '';
-          this.parentNode.querySelector('.file-name').textContent = fileName;
-        });
+
+      // Keep client_email in sync if user edits email
+      emailInput.addEventListener('input', () => {
+        clientEmailInput.value = emailInput.value;
       });
-      
+
+      // Helper: attach change handler to a file input to show filename
+      function attachFileNameHandler(input) {
+        input.addEventListener('change', function() {
+          const fileName = this.files && this.files[0] ? this.files[0].name : '';
+          const nameEl = this.parentNode.querySelector('.file-name');
+          if (nameEl) nameEl.textContent = fileName;
+        });
+      }
+
+      // Initial file inputs
+      document.querySelectorAll('input[type="file"]').forEach(attachFileNameHandler);
+
       // Add more documents
       addMoreBtn.addEventListener('click', function() {
         const tbody = documentsTable.querySelector('tbody');
-        const newRow = document.querySelector('.document-row').cloneNode(true);
-        
+        const templateRow = documentsTable.querySelector('.document-row');
+        const newRow = templateRow.cloneNode(true);
+
         // Clear inputs
         newRow.querySelector('input[type="text"]').value = '';
-        newRow.querySelector('input[type="file"]').value = '';
+        const fileInput = newRow.querySelector('input[type="file"]');
+        fileInput.value = '';
         newRow.querySelector('.file-name').textContent = '';
-        
-        // Show remove button
-        newRow.querySelector('.remove-btn').style.visibility = 'visible';
-        newRow.querySelector('.remove-btn').addEventListener('click', function() {
+
+        // Show remove button and wire handler
+        const removeBtn = newRow.querySelector('.remove-btn');
+        removeBtn.style.visibility = 'visible';
+        removeBtn.addEventListener('click', function() {
           if (documentsTable.querySelectorAll('.document-row').length > 1) {
             this.closest('.document-row').remove();
           }
         });
-        
-        // Add file change event
-        newRow.querySelector('input[type="file"]').addEventListener('change', function() {
-          const fileName = this.files[0] ? this.files[0].name : '';
-          this.parentNode.querySelector('.file-name').textContent = fileName;
-        });
-        
+
+        // Attach filename handler to the cloned input
+        attachFileNameHandler(fileInput);
+
         tbody.appendChild(newRow);
       });
-      
-      // Add remove functionality to initial rows if needed
+
+      // Enable remove on initial rows if desired
       document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           if (documentsTable.querySelectorAll('.document-row').length > 1) {
@@ -299,97 +309,29 @@
           }
         });
       });
-      
-     // Form submission - REAL implementation
-form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Basic validation
-    let isValid = true;
-    const email = document.getElementById('email').value;
-    const fullName = document.getElementById('full_name').value;
-    
-    if (!fullName) {
-        document.querySelector('[data-error-for="full_name"]').classList.add('show');
-        isValid = false;
-    } else {
-        document.querySelector('[data-error-for="full_name"]').classList.remove('show');
-    }
-    
-    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-        document.querySelector('[data-error-for="email"]').classList.add('show');
-        isValid = false;
-    } else {
-        document.querySelector('[data-error-for="email"]').classList.remove('show');
-    }
-    
-    // Check if at least one document is added
-    const hasFiles = Array.from(document.querySelectorAll('input[type="file"]')).some(input => input.files.length > 0);
-    if (!hasFiles) {
-        uploadStatus.textContent = 'Please upload at least one document.';
-        uploadStatus.className = 'upload-status error';
-        isValid = false;
-    } else {
-        uploadStatus.className = 'upload-status';
-        uploadStatus.textContent = '';
-    }
-    
-    if (!isValid) return;
-    
-    // Disable submit button
-    const submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = true;
-    submitBtn.text极速Content = 'Uploading...';
-    
-    // REAL form submission to n8n
-    const formData = new FormData(form);
-    
-    // Замените URL на ваш настоящий webhook в n8n
-    fetch('https://contentlabs.app.n8n.cloud/webhook/upload-docs-dKv46283Str', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            uploadStatus.textContent = 'Documents uploaded successfully! Your application is now complete.';
-            uploadStatus.className = 'upload-status success';
-        } else {
-            uploadStatus.textContent = 'Error: ' + (data.message || 'Upload failed');
-            uploadStatus.className = 'upload-status error';
-        }
-    })
-    .catch(error => {
-        uploadStatus.textContent = 'Network error: ' + error.message;
-        uploadStatus.className = 'upload-status error';
-    })
-    .finally(() => {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Upload Documents';
-    });
-});
-        
-        // Basic validation
+
+      // Validation helper
+      function validateForm() {
         let isValid = true;
-        const email = document.getElementById('email').value;
-        const fullName = document.getElementById('full_name').value;
-        
+        const email = emailInput.value.trim();
+        const fullName = document.getElementById('full_name').value.trim();
+
         if (!fullName) {
           document.querySelector('[data-error-for="full_name"]').classList.add('show');
           isValid = false;
         } else {
           document.querySelector('[data-error-for="full_name"]').classList.remove('show');
         }
-        
+
         if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
           document.querySelector('[data-error-for="email"]').classList.add('show');
           isValid = false;
         } else {
           document.querySelector('[data-error-for="email"]').classList.remove('show');
         }
-        
-        // Check if at least one document is added
-        const hasFiles = Array.from(document.querySelectorAll('input[type="file"]')).some(input => input.files.length > 0);
+
+        const hasFiles = Array.from(document.querySelectorAll('input[type="file"]'))
+          .some(input => input.files && input.files.length > 0);
         if (!hasFiles) {
           uploadStatus.textContent = 'Please upload at least one document.';
           uploadStatus.className = 'upload-status error';
@@ -398,27 +340,53 @@ form.addEventListener('submit', function(e) {
           uploadStatus.className = 'upload-status';
           uploadStatus.textContent = '';
         }
-        
-        if (!isValid) return;
-        
-        // Disable submit button
-        const submitBtn = document.getElementById('submitBtn');
+
+        return isValid;
+      }
+
+      // Submit handler (real submission to n8n)
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!validateForm()) return;
+
         submitBtn.disabled = true;
         submitBtn.textContent = 'Uploading...';
-        
-        // Simulate upload process (in real scenario, this would be an AJAX call to n8n webhook)
-        setTimeout(() => {
-          uploadStatus.textContent = 'Documents uploaded successfully! Your application is now complete.';
-          uploadStatus.className = 'upload-status success';
-          
-          // Reset form after successful upload
+
+        const formData = new FormData(form);
+
+        fetch('https://contentlabs.app.n8n.cloud/webhook/upload-docs-dKv46283Str', {
+          method: 'POST',
+          body: formData
+        })
+        .then(async (response) => {
+          // Try JSON, fallback to text
+          const ct = response.headers.get('content-type') || '';
+          if (ct.includes('application/json')) {
+            return {ok: response.ok, data: await response.json()};
+          } else {
+            return {ok: response.ok, data: {success: response.ok, message: await response.text()}};
+          }
+        })
+        .then(({ok, data}) => {
+          if ((data && data.success) || ok) {
+            uploadStatus.textContent = 'Documents uploaded successfully! Your application is now complete.';
+            uploadStatus.className = 'upload-status success';
+            form.reset();
+            document.querySelectorAll('.file-name').forEach(el => el.textContent = '');
+          } else {
+            uploadStatus.textContent = 'Error: ' + (data && data.message ? data.message : 'Upload failed');
+            uploadStatus.className = 'upload-status error';
+          }
+        })
+        .catch(error => {
+          uploadStatus.textContent = 'Network error: ' + error.message;
+          uploadStatus.className = 'upload-status error';
+        })
+        .finally(() => {
           submitBtn.disabled = false;
           submitBtn.textContent = 'Upload Documents';
-          
-          // Clear form
-          form.reset();
-          document.querySelectorAll('.file-name').forEach(el => el.textContent = '');
-        }, 2000);
+        });
       });
     });
   </script>
