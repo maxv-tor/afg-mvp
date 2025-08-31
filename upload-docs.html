@@ -250,16 +250,26 @@
       const emailInput = document.getElementById('email');
       const clientEmailInput = document.getElementById('client_email');
 
-      // Prefill email from URL
+      // Read URL params ONCE, then use
+      const urlParams = new URLSearchParams(window.location.search);
+
+      // Prefill submission_id and email from URL
       const submissionIdParam = urlParams.get('submission_id');
       if (submissionIdParam) {
-      document.getElementById('submission_id').value = submissionIdParam;
+        document.getElementById('submission_id').value = submissionIdParam;
       }
-      const urlParams = new URLSearchParams(window.location.search);
+
       const emailParam = urlParams.get('email');
       if (emailParam) {
         emailInput.value = emailParam;
         clientEmailInput.value = emailParam;
+      }
+
+      // Optionally prefill full_name if present
+      const fullNameParam = urlParams.get('full_name');
+      if (fullNameParam) {
+        const fullNameInput = document.getElementById('full_name');
+        fullNameInput.value = fullNameParam;
       }
 
       // Keep client_email in sync if user edits email
@@ -365,7 +375,6 @@
           body: formData
         })
         .then(async (response) => {
-          // Try JSON, fallback to text
           const ct = response.headers.get('content-type') || '';
           if (ct.includes('application/json')) {
             return {ok: response.ok, data: await response.json()};
