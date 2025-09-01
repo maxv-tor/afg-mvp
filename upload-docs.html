@@ -126,6 +126,12 @@
       color: #b91c1c;
       display: block;
     }
+    .upload-status.pending {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -226,6 +232,7 @@
           </div>
 
           <div id="uploadStatus" class="upload-status"></div>
+          <div id="progress" class="progress" style="display: none;"><div class="bar" id="progressBar"></div></div>
 
           <div class="actions">
             <div class="left">
@@ -368,39 +375,55 @@
         submitBtn.disabled = true;
         submitBtn.textContent = 'Uploading...';
 
+        uploadStatus.textContent = 'Uploading your documents...';
+        uploadStatus.className = 'upload-status pending';
+
+        const progressContainer = document.getElementById('progress');
+        const progressBar = document.getElementById('progressBar');
+        progressContainer.style.display = 'block';
+        progressBar.style.width = '0%';
+
         const formData = new FormData(form);
 
-        fetch('https://contentlabs.app.n8n.cloud/webhook/upload-docs-dKv46283Str', {
-          method: 'POST',
-          body: formData
-        })
-        .then(async (response) => {
-          const ct = response.headers.get('content-type') || '';
-          if (ct.includes('application/json')) {
-            return {ok: response.ok, data: await response.json()};
-          } else {
-            return {ok: response.ok, data: {success: response.ok, message: await response.text()}};
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', form.action, true);
+
+        xhr.upload.onprogress = function(event) {
+          if (event.lengthComputable) {
+            const percent = (event.loaded / event.total) * 100;
+            progressBar.style.width = percent + '%';
           }
-        })
-        .then(({ok, data}) => {
-          if ((data && data.success) || ok) {
-            uploadStatus.textContent = 'Documents uploaded successfully! Your application is now complete.';
-            uploadStatus.className = 'upload-status success';
-            form.reset();
-            document.querySelectorAll('.file-name').forEach(el => el.textContent = '');
-          } else {
-            uploadStatus.textContent = 'Error: ' + (data && data.message ? data.message : 'Upload failed');
-            uploadStatus.className = 'upload-status error';
+        };
+
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            let ok = xhr.status === 200;
+            let data;
+            try {
+              data = JSON.parse(xhr.responseText);
+            } catch (e) {
+              data = {success: ok, message: xhr.responseText};
+            }
+
+            if (ok && (data && data.success)) {
+              uploadStatus.textContent = 'Documents uploaded successfully! Your application is now complete.';
+              uploadStatus.className = 'upload-status success';
+              form.reset();
+              document.querySelectorAll('.file-name').forEach(el => el.textContent = '');
+              progressBar.style.width = '100%';
+            } else {
+              uploadStatus.textContent = 'Error: ' + (data && data.message ? data.message : 'Upload failed');
+              uploadStatus.className = 'upload-status error';
+              progressBar.style.width = '0%';
+            }
+
+            progressContainer.style.display = 'none';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Upload Documents';
           }
-        })
-        .catch(error => {
-          uploadStatus.textContent = 'Network error: ' + error.message;
-          uploadStatus.className = 'upload-status error';
-        })
-        .finally(() => {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Upload Documents';
-        });
+        };
+
+        xhr.send(formData);
       });
     });
   </script>
