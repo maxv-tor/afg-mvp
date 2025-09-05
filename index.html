@@ -498,7 +498,7 @@
               verificationRequested = true;
               persist();
               updateUI();
-              nextBtn.disabled = false;
+              nextBtn.disabled = true;
               loadingSpinner.classList.remove('show'); // ADDED: Hide spinner
             } catch (e) {
               showVerificationError('Failed to send verification code. Try again.');
