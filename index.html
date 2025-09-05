@@ -89,6 +89,13 @@
     #verificationError { color: var(--danger); font-size: 13px; margin-top: 6px; display: none; }
     #verificationError.show { display: block; }
     #verificationInfo { color: var(--text-muted); font-size: 14px; margin-bottom: 12px; }
+    /* ADDED: Loading spinner styles */
+    .loading-spinner { display: none; align-items: center; gap: 8px; color: var(--text-muted); font-size: 14px; margin-top: 12px; }
+    .loading-spinner.show { display: flex; }
+    .spinner { width: 16px; height: 16px; border: 2px solid var(--border-soft); border-top: 2px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    /* ADDED: Disabled step dot styles */
+    .step-dot.disabled { opacity: 0.3; cursor: not-allowed !important; }
   </style>
 </head>
 <body>
@@ -158,9 +165,14 @@
               <div class="error" data-error-for="industry">Please select an industry.</div>
             </div>
           </div>
+          <!-- ADDED: Loading spinner -->
+          <div id="loadingSpinner" class="loading-spinner">
+            <div class="spinner"></div>
+            <span>Sending verification code to your email...</span>
+          </div>
           <!-- ADDED: Verification section inside Step 1 -->
           <div id="verificationSection">
-            <p id="verificationInfo">For your security and to complete the application form, we’ve just sent a 6‑digit verification code to your email address - simply enter it below to confirm ownership of your email, keep your information safe, and ensure smooth communication going forward.</p>
+            <p id="verificationInfo">For your security and to complete the application form, we've just sent a 6‑digit verification code to your email address - simply enter it below to confirm ownership of your email, keep your information safe, and ensure smooth communication going forward.</p>
             <label for="verificationCode">Enter Verification Code (check your email)</label>
             <input type="text" id="verificationCode" maxlength="6" placeholder="6-digit code" />
             <button type="button" id="verifyBtn" class="btn primary">Verify</button>
@@ -349,6 +361,7 @@
       const saveBtn = document.getElementById('saveBtn');
       const progressBar = document.getElementById('progressBar');
       const verificationSection = document.getElementById('verificationSection');
+      const loadingSpinner = document.getElementById('loadingSpinner'); // ADDED
 
       const STORAGE_KEY = 'afg_funding_app_v1';
       let current = 0;
@@ -361,6 +374,8 @@
         dots.forEach((d, i) => {
           d.classList.toggle('active', i === current);
           d.classList.toggle('done', i < current);
+          // ADDED: Disable dots on step 0 if not verified
+          d.classList.toggle('disabled', current === 0 && !isVerified && i > 0);
         });
 
         prevBtn.style.visibility = current === 0 ? 'hidden' : 'visible';
@@ -461,6 +476,7 @@
 
             try {
               nextBtn.disabled = true;
+              loadingSpinner.classList.add('show'); // ADDED: Show spinner
               const res = await fetch('https://contentlabs.app.n8n.cloud/webhook/verify-email-start', { // TODO: Replace with your real verification start webhook URL
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -475,9 +491,11 @@
               persist();
               updateUI();
               nextBtn.disabled = false;
+              loadingSpinner.classList.remove('show'); // ADDED: Hide spinner
             } catch (e) {
               showVerificationError('Failed to send verification code. Try again.');
               nextBtn.disabled = false;
+              loadingSpinner.classList.remove('show'); // ADDED: Hide spinner
             }
           } else {
             // If already requested but not verified, show error and stay
@@ -560,6 +578,10 @@
         dot.style.cursor = 'pointer';
         dot.title = `Go to step ${i+1}`;
         dot.addEventListener('click', () => {
+          // ADDED: Prevent navigation if on step 0 and not verified
+          if (current === 0 && !isVerified && i > 0) {
+            return;
+          }
           if (i <= current || validateStep(current)) {
             current = i;
             updateUI();
@@ -584,7 +606,7 @@
           el.innerHTML = html;
         } catch (e) {
           console.error(e);
-          el.innerHTML = '<div style="color:#d92d20">Failed to load the agreement. Ensure the document is shared as “Anyone with the link — Viewer”.</div>';
+          el.innerHTML = '<div style="color:#d92d20">Failed to load the agreement. Ensure the document is shared as "Anyone with the link — Viewer".</div>';
         }
       }
       loadAgreement();
