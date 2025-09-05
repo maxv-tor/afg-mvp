@@ -81,6 +81,13 @@
     .range-row{display:flex;align-items:center;gap:12px}
     .range-row input[type="range"]{flex:1}
     .range-row output{min-width:24px;text-align:center;font-weight:600}
+    /* ADDED: Styles for verification field */
+    #verificationSection { display: none; margin-top: 16px; padding: 12px; border: 1px solid var(--border-soft); border-radius: var(--radius-sm); background: #f9f9f9; }
+    #verificationSection.active { display: block; }
+    #verificationCode { width: 100%; max-width: 200px; }
+    #verifyBtn { margin-top: 8px; }
+    #verificationError { color: var(--danger); font-size: 13px; margin-top: 6px; display: none; }
+    #verificationError.show { display: block; }
   </style>
 </head>
 <body>
@@ -150,9 +157,16 @@
               <div class="error" data-error-for="industry">Please select an industry.</div>
             </div>
           </div>
+          <!-- ADDED: Verification section inside Step 1 -->
+          <div id="verificationSection">
+            <label for="verificationCode">Enter Verification Code (check your email)</label>
+            <input type="text" id="verificationCode" maxlength="6" placeholder="6-digit code" />
+            <button type="button" id="verifyBtn" class="btn primary">Verify</button>
+            <div id="verificationError"></div>
+          </div>
         </section>
 
-        <!-- Step 2: Funding Needs -->
+        <!-- Step 2: Funding Needs --> <!-- (остальные шаги без изменений) -->
         <section class="step" data-step="1">
           <h2>Step 2 -- Funding Needs</h2>
           <p class="desc">Your expected amount and purpose.</p>
@@ -335,6 +349,8 @@
 
       const STORAGE_KEY = 'afg_funding_app_v1';
       let current = 0;
+      // ADDED: Verification state
+      let isVerified = false;
 
       function updateUI(){
         steps.forEach((s, i) => s.classList.toggle('active', i === current));
@@ -392,14 +408,14 @@
       function persist(){
         const data = Object.fromEntries(new FormData(form).entries());
         data.user_agreement_accepted = !!form.user_agreement_accepted?.checked;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ step: current, data }));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ step: current, data, isVerified })); // CHANGED: Added isVerified to storage
       }
 
       function restore(){
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return;
         try{
-          const { step, data } = JSON.parse(raw);
+          const { step, data, isVerified: storedVerified } = JSON.parse(raw);
           if (data && typeof data === 'object') {
             Object.entries(data).forEach(([k,v])=>{
               const field = form.elements[k];
@@ -409,6 +425,7 @@
             });
           }
           if (Number.isInteger(step)) current = Math.max(0, Math.min(TOTAL_STEPS-1, step));
+          isVerified = !!storedVerified; // ADDED: Restore verification state
         }catch(e){}
       }
 
@@ -419,7 +436,88 @@
       });
 
       prevBtn.addEventListener('click', () => go(-1));
-      nextBtn.addEventListener('click', () => go(1));
+
+      // CHANGED: Next button logic with verification
+      nextBtn.addEventListener('click', async () => {
+        if (!validateStep(current)) return;
+        if (current === 0 && !isVerified) {
+          // Send to verification webhook
+          const data = {
+            full_name: form.full_name.value.trim(),
+            email: form.email.value.trim(),
+            phone: form.phone.value.trim(),
+            company: form.company.value.trim(),
+            industry: form.industry.value
+          };
+
+          try {
+            nextBtn.disabled = true;
+            const res = await fetch('https://contentlabs.app.n8n.cloud/webhook/verify-email-start', { // TODO: Replace with your real verification start webhook URL
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(data)
+            });
+            if (!res.ok) throw new Error('Failed to send verification');
+            const json = await res.json();
+            if (json.status !== 'email_sent') throw new Error('Unexpected response');
+
+            // Show verification field
+            document.getElementById('verificationSection').classList.add('active');
+            nextBtn.disabled = false;
+          } catch (e) {
+            showVerificationError('Failed to send verification code. Try again.');
+            nextBtn.disabled = false;
+          }
+          return; // Don't proceed to next step yet
+        }
+        go(1);
+      });
+
+      // ADDED: Verify button logic
+      const verifyBtn = document.getElementById('verifyBtn');
+      verifyBtn.addEventListener('click', async () => {
+        const code = document.getElementById('verificationCode').value.trim();
+        if (code.length !== 6 || !/^\d{6}$/.test(code)) {
+          showVerificationError('Enter a valid 6-digit code.');
+          return;
+        }
+
+        const data = {
+          email: form.email.value.trim(),
+          entered_code: code
+        };
+
+        try {
+          verifyBtn.disabled = true;
+          const res = await fetch('https://contentlabs.app.n8n.cloud/webhook/verify-email-check', { // TODO: Replace with your real verification check webhook URL
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+          if (!res.ok) throw new Error('Verification failed');
+          const json = await res.json();
+          if (json.status !== 'verified') throw new Error(json.error || 'Invalid code');
+
+          // Success: Hide verification, set verified, proceed
+          document.getElementById('verificationSection').classList.remove('active');
+          isVerified = true;
+          persist();
+          go(1); // Proceed to next step
+        } catch (e) {
+          showVerificationError(e.message || 'Invalid code. Try again.');
+        } finally {
+          verifyBtn.disabled = false;
+        }
+      });
+
+      // ADDED: Function to show verification error
+      function showVerificationError(msg) {
+        const errEl = document.getElementById('verificationError');
+        errEl.textContent = msg;
+        errEl.classList.add('show');
+        setTimeout(() => errEl.classList.remove('show'), 5000);
+      }
+
       saveBtn.addEventListener('click', () => {
         persist();
         saveBtn.textContent = 'Saved';
@@ -427,10 +525,14 @@
         setTimeout(()=>{ saveBtn.textContent = 'Save Progress'; saveBtn.disabled = false; }, 1200);
       });
 
+      // CHANGED: Submit handler with verification check
       form.addEventListener('submit', (e) => {
-        if (!validateStep(0) || !validateStep(1) || !validateStep(5)) {
+        if (!isVerified || !validateStep(0) || !validateStep(1) || !validateStep(5)) {
           e.preventDefault();
-          if (!validateStep(0)) current = 0;
+          if (!isVerified) {
+            current = 0;
+            showVerificationError('Please verify your email first.');
+          } else if (!validateStep(0)) current = 0;
           else if (!validateStep(1)) current = 1;
           else current = 5;
           updateUI();
