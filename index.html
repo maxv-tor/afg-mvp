@@ -88,6 +88,7 @@
     #verifyBtn { margin-top: 8px; }
     #verificationError { color: var(--danger); font-size: 13px; margin-top: 6px; display: none; }
     #verificationError.show { display: block; }
+    #verificationInfo { color: var(--text-muted); font-size: 14px; margin-bottom: 12px; }
   </style>
 </head>
 <body>
@@ -159,6 +160,7 @@
           </div>
           <!-- ADDED: Verification section inside Step 1 -->
           <div id="verificationSection">
+            <p id="verificationInfo">For your security and to complete the application form, we’ve just sent a 6‑digit verification code to your email address - simply enter it below to confirm ownership of your email, keep your information safe, and ensure smooth communication going forward.</p>
             <label for="verificationCode">Enter Verification Code (check your email)</label>
             <input type="text" id="verificationCode" maxlength="6" placeholder="6-digit code" />
             <button type="button" id="verifyBtn" class="btn primary">Verify</button>
@@ -166,7 +168,7 @@
           </div>
         </section>
 
-        <!-- Step 2: Funding Needs --> <!-- (остальные шаги без изменений) -->
+        <!-- Step 2: Funding Needs -->
         <section class="step" data-step="1">
           <h2>Step 2 -- Funding Needs</h2>
           <p class="desc">Your expected amount and purpose.</p>
@@ -346,11 +348,13 @@
       const submitBtn = document.getElementById('submitBtn');
       const saveBtn = document.getElementById('saveBtn');
       const progressBar = document.getElementById('progressBar');
+      const verificationSection = document.getElementById('verificationSection');
 
       const STORAGE_KEY = 'afg_funding_app_v1';
       let current = 0;
       // ADDED: Verification state
       let isVerified = false;
+      let verificationRequested = false; // New flag to track if code was already requested
 
       function updateUI(){
         steps.forEach((s, i) => s.classList.toggle('active', i === current));
@@ -367,6 +371,9 @@
 
         const pct = Math.round((current) / (TOTAL_STEPS - 1) * 100);
         progressBar.style.width = pct + '%';
+
+        // Ensure verification section is hidden unless requested
+        verificationSection.classList.toggle('active', current === 0 && verificationRequested && !isVerified);
       }
 
       function showError(name, show){
@@ -408,14 +415,14 @@
       function persist(){
         const data = Object.fromEntries(new FormData(form).entries());
         data.user_agreement_accepted = !!form.user_agreement_accepted?.checked;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ step: current, data, isVerified })); // CHANGED: Added isVerified to storage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ step: current, data, isVerified, verificationRequested }));
       }
 
       function restore(){
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return;
         try{
-          const { step, data, isVerified: storedVerified } = JSON.parse(raw);
+          const { step, data, isVerified: storedVerified, verificationRequested: storedRequested } = JSON.parse(raw);
           if (data && typeof data === 'object') {
             Object.entries(data).forEach(([k,v])=>{
               const field = form.elements[k];
@@ -425,7 +432,8 @@
             });
           }
           if (Number.isInteger(step)) current = Math.max(0, Math.min(TOTAL_STEPS-1, step));
-          isVerified = !!storedVerified; // ADDED: Restore verification state
+          isVerified = !!storedVerified;
+          verificationRequested = !!storedRequested;
         }catch(e){}
       }
 
@@ -441,32 +449,39 @@
       nextBtn.addEventListener('click', async () => {
         if (!validateStep(current)) return;
         if (current === 0 && !isVerified) {
-          // Send to verification webhook
-          const data = {
-            full_name: form.full_name.value.trim(),
-            email: form.email.value.trim(),
-            phone: form.phone.value.trim(),
-            company: form.company.value.trim(),
-            industry: form.industry.value
-          };
+          if (!verificationRequested) {
+            // Send to verification webhook only once
+            const data = {
+              full_name: form.full_name.value.trim(),
+              email: form.email.value.trim(),
+              phone: form.phone.value.trim(),
+              company: form.company.value.trim(),
+              industry: form.industry.value
+            };
 
-          try {
-            nextBtn.disabled = true;
-            const res = await fetch('https://contentlabs.app.n8n.cloud/webhook/verify-email-start', { // TODO: Replace with your real verification start webhook URL
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(data)
-            });
-            if (!res.ok) throw new Error('Failed to send verification');
-            const json = await res.json();
-            if (json.status !== 'email_sent') throw new Error('Unexpected response');
+            try {
+              nextBtn.disabled = true;
+              const res = await fetch('https://contentlabs.app.n8n.cloud/webhook/verify-email-start', { // TODO: Replace with your real verification start webhook URL
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+              });
+              if (!res.ok) throw new Error('Failed to send verification');
+              const json = await res.json();
+              if (json.status !== 'email_sent') throw new Error('Unexpected response');
 
-            // Show verification field
-            document.getElementById('verificationSection').classList.add('active');
-            nextBtn.disabled = false;
-          } catch (e) {
-            showVerificationError('Failed to send verification code. Try again.');
-            nextBtn.disabled = false;
+              // Mark as requested and show verification field
+              verificationRequested = true;
+              persist();
+              updateUI();
+              nextBtn.disabled = false;
+            } catch (e) {
+              showVerificationError('Failed to send verification code. Try again.');
+              nextBtn.disabled = false;
+            }
+          } else {
+            // If already requested but not verified, show error and stay
+            showVerificationError('Please enter the verification code to proceed.');
           }
           return; // Don't proceed to next step yet
         }
@@ -484,7 +499,7 @@
 
         const data = {
           email: form.email.value.trim(),
-          entered_code: code
+          entered_code: code // Send as string
         };
 
         try {
@@ -499,7 +514,7 @@
           if (json.status !== 'verified') throw new Error(json.error || 'Invalid code');
 
           // Success: Hide verification, set verified, proceed
-          document.getElementById('verificationSection').classList.remove('active');
+          verificationSection.classList.remove('active');
           isVerified = true;
           persist();
           go(1); // Proceed to next step
