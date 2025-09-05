@@ -69,6 +69,8 @@
     .btn.primary{background:transparent;border-color:var(--primary);color:var(--primary)}
     .btn.primary.filled{background:var(--primary);color:#fff;border-color:var(--primary)}
     .btn.primary.filled:hover{background:var(--primary-600)}
+    .btn.success{background:var(--success);color:#fff;border-color:var(--success)}
+    .btn.success:hover{background:#15803d}
     .agreement{
       padding:12px;border:1px solid var(--border);border-radius:10px;background:#fff;max-height:230px;overflow:auto
     }
@@ -175,7 +177,7 @@
             <p id="verificationInfo">For your security and to complete the application form, we've just sent a 6‑digit verification code to your email address - simply enter it below to confirm ownership of your email, keep your information safe, and ensure smooth communication going forward.</p>
             <label for="verificationCode">Enter Verification Code (check your email)</label>
             <input type="text" id="verificationCode" maxlength="6" placeholder="6-digit code" />
-            <button type="button" id="verifyBtn" class="btn primary">Verify</button>
+            <button type="button" id="verifyBtn" class="btn success">Verify</button>
             <div id="verificationError"></div>
           </div>
         </section>
@@ -382,6 +384,12 @@
 
         const isLast = current === TOTAL_STEPS - 1;
         nextBtn.style.display = isLast ? 'none' : 'inline-block';
+                // Disable Next button on step 0 if verification requested but not verified
+                if (current === 0 && verificationRequested && !isVerified) {
+                nextBtn.disabled = true;
+                } else {
+                        nextBtn.disabled = false;
+                        }
         submitBtn.style.display = isLast ? 'inline-block' : 'none';
 
         const pct = Math.round((current) / (TOTAL_STEPS - 1) * 100);
@@ -494,7 +502,7 @@
               loadingSpinner.classList.remove('show'); // ADDED: Hide spinner
             } catch (e) {
               showVerificationError('Failed to send verification code. Try again.');
-              nextBtn.disabled = false;
+              nextBtn.disabled = true; // Keep disabled until verification
               loadingSpinner.classList.remove('show'); // ADDED: Hide spinner
             }
           } else {
