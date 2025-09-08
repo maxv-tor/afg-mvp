@@ -418,44 +418,56 @@
 
         const formData = new FormData(form);
 
-       fetch('https://contentlabs.app.n8n.cloud/webhook/upload-and-process-files', {
+fetch('https://contentlabs.app.n8n.cloud/webhook/upload-and-process-files', {
   method: 'POST',
-  body: formData,
-  redirect: 'manual'  // Добавить эту строку
+  body: formData
 })
-.then(async (response) => {
-  // Если получили redirect (303), перенаправляем
-  if (response.status === 303 && response.headers.get('location')) {
-    window.location.href = response.headers.get('location');
-    return;
+.then(response => {
+  // Проверяем, является ли ответ redirect
+  if (response.redirected && response.url) {
+    // Если есть redirect, переходим по новому URL
+    window.location.href = response.url;
+    return null;
   }
   
-  const ct = response.headers.get('content-type') || '';
-  if (ct.includes('application/json')) {
-    return {ok: response.ok, data: await response.json()};
+  // Проверяем статус ответа
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+  
+  // Проверяем тип контента
+  const contentType = response.headers.get('content-type') || '';
+  if (contentType.includes('application/json')) {
+    return response.json();
   } else {
-    return {ok: response.ok, data: {success: response.ok, message: await response.text()}};
+    return response.text().then(text => ({
+      success: true,
+      message: text || 'Upload completed successfully'
+    }));
   }
 })
-.then((result) => {
-  // Если result undefined (был redirect), ничего не делаем
-  if (!result) return;
+.then(data => {
+  // Если data null (был redirect), не обрабатываем дальше
+  if (data === null) return;
   
-  const {ok, data} = result;
-  if ((data && data.success) || ok) {
-    uploadStatus.textContent = 'Documents uploaded successfully! Your application is now complete.';
+  if (data && data.success !== false) {
+    uploadStatus.textContent = 'Documents uploaded successfully! Redirecting to payment...';
     uploadStatus.className = 'upload-status success';
-    form.reset();
-    document.querySelectorAll('.file-name').forEach(el => el.textContent = '');
+    
+    // Если есть redirect_url в ответе, используем его
+    if (data.redirect_url) {
+      setTimeout(() => {
+        window.location.href = data.redirect_url;
+      }, 1500);
+    }
   } else {
-    uploadStatus.textContent = 'Error: ' + (data && data.message ? data.message : 'Upload failed');
+    const errorMsg = (data && data.message) ? data.message : 'Upload failed';
+    uploadStatus.textContent = 'Error: ' + errorMsg;
     uploadStatus.className = 'upload-status error';
   }
-})        .catch(error => {
-          uploadStatus.textContent = 'Network error: ' + error.message;
-          uploadStatus.className = 'upload-status error';
-        })
-        .finally(() => {
+})        
+  
+  .finally(() => {
           submitBtn.disabled = false;
           submitBtn.textContent = 'Upload Documents';
           hideLoading();
