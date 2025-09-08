@@ -418,30 +418,40 @@
 
         const formData = new FormData(form);
 
-        fetch('https://contentlabs.app.n8n.cloud/webhook/upload-and-process-files', {
-          method: 'POST',
-          body: formData
-        })
-        .then(async (response) => {
-          const ct = response.headers.get('content-type') || '';
-          if (ct.includes('application/json')) {
-            return {ok: response.ok, data: await response.json()};
-          } else {
-            return {ok: response.ok, data: {success: response.ok, message: await response.text()}};
-          }
-        })
-        .then(({ok, data}) => {
-          if ((data && data.success) || ok) {
-            uploadStatus.textContent = 'Documents uploaded successfully! Your application is now complete.';
-            uploadStatus.className = 'upload-status success';
-            form.reset();
-            document.querySelectorAll('.file-name').forEach(el => el.textContent = '');
-          } else {
-            uploadStatus.textContent = 'Error: ' + (data && data.message ? data.message : 'Upload failed');
-            uploadStatus.className = 'upload-status error';
-          }
-        })
-        .catch(error => {
+       fetch('https://contentlabs.app.n8n.cloud/webhook/upload-and-process-files', {
+  method: 'POST',
+  body: formData,
+  redirect: 'manual'  // Добавить эту строку
+})
+.then(async (response) => {
+  // Если получили redirect (303), перенаправляем
+  if (response.status === 303 && response.headers.get('location')) {
+    window.location.href = response.headers.get('location');
+    return;
+  }
+  
+  const ct = response.headers.get('content-type') || '';
+  if (ct.includes('application/json')) {
+    return {ok: response.ok, data: await response.json()};
+  } else {
+    return {ok: response.ok, data: {success: response.ok, message: await response.text()}};
+  }
+})
+.then((result) => {
+  // Если result undefined (был redirect), ничего не делаем
+  if (!result) return;
+  
+  const {ok, data} = result;
+  if ((data && data.success) || ok) {
+    uploadStatus.textContent = 'Documents uploaded successfully! Your application is now complete.';
+    uploadStatus.className = 'upload-status success';
+    form.reset();
+    document.querySelectorAll('.file-name').forEach(el => el.textContent = '');
+  } else {
+    uploadStatus.textContent = 'Error: ' + (data && data.message ? data.message : 'Upload failed');
+    uploadStatus.className = 'upload-status error';
+  }
+})        .catch(error => {
           uploadStatus.textContent = 'Network error: ' + error.message;
           uploadStatus.className = 'upload-status error';
         })
