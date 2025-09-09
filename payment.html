@@ -21,7 +21,7 @@
     }
 
     .container {
-        max-width: 900px;
+        max-width: 1200px;
         margin: 0 auto;
         background: white;
         border-radius: 12px;
@@ -75,6 +75,26 @@
         margin-bottom: 5px;
     }
 
+    /* New styles for two-column layout */
+    .content-wrapper {
+        display: flex;
+        gap: 40px;
+        align-items: flex-start;
+    }
+
+    .left-column {
+        flex: 1;
+    }
+
+    .right-column {
+        flex: 1;
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 30px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
     .price {
         font-size: 48px;
         font-weight: bold;
@@ -87,7 +107,6 @@
         background: #f9fafb;
         border-radius: 10px;
         padding: 25px;
-        margin-bottom: 35px;
         border: 1px solid #e5e7eb;
     }
 
@@ -142,7 +161,7 @@
         border-radius: 8px;
         font-size: 16px;
         transition: all 0.3s ease;
-        background: #f9fafb;
+        background: white;
     }
 
     .form-group input:focus {
@@ -226,6 +245,18 @@
         line-height: 1.6;
     }
 
+    /* Responsive design */
+    @media (max-width: 968px) {
+        .content-wrapper {
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .container {
+            max-width: 900px;
+        }
+    }
+
     @media (max-width: 768px) {
         body {
             padding: 10px;
@@ -254,6 +285,10 @@
         .benefit-item span:last-child {
             font-size: 14px;
         }
+
+        .right-column {
+            padding: 20px;
+        }
     }
 
     @media (max-width: 480px) {
@@ -272,9 +307,13 @@
         .logo img {
             max-width: 150px;
         }
+
+        .right-column {
+            padding: 15px;
+        }
     }
 
-    /* Анимации */
+    /* Animations */
     @keyframes fadeIn {
         from {
             opacity: 0;
@@ -304,7 +343,7 @@
         animation: spin 0.8s linear infinite;
         margin-right: 8px;
     }
-</style>
+    </style>
 
 </head>
 <body>
@@ -317,88 +356,94 @@
             </div>
         </header>
         
-        <main class=main-content">
+        <main class="main-content">
             <h1>Complete Your Application</h1>
             <p class="subtitle">A small processing fee is required to proceed with your funding application review</p>
         
-                <div class="secure-payment-notice">
-                    <strong>Secure Payment:</strong>
-                    Your payment is processed securely through Stripe. We never store your payment information.
+            <div class="secure-payment-notice">
+                <strong>Secure Payment:</strong>
+                Your payment is processed securely through Stripe. We never store your payment information.
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Left column with price and benefits -->
+                <div class="left-column">
+                    <div class="price">CHF 2000</div>
+                    
+                    <div class="benefits">
+                        <div class="benefit-item">
+                            <span class="benefit-icon">✓</span>
+                            <span>One-time application processing fee</span>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="benefit-icon">✓</span>
+                            <span>Complete application review by our team</span>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="benefit-icon">✓</span>
+                            <span>Matching with relevant lenders</span>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="benefit-icon">✓</span>
+                            <span>Priority processing (48-72 hours)</span>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="benefit-icon">✓</span>
+                            <span>Direct communication with matched lenders</span>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="benefit-icon">✓</span>
+                            <span>No hidden fees or ongoing charges</span>
+                        </div>
+                    </div>
                 </div>
-           
-               <div class="price">CHF 2000</div>
                 
-                <div class="benefits">
-                    <div class="benefit-item">
-                        <span class="benefit-icon">✓</span>
-                        <span>One-time application processing fee</span>
+                <!-- Right column with form -->
+                <div class="right-column">
+                    <h2>Enter Your Information</h2>
+                    
+                    <div class="form-group">
+                        <label for="submission-id">Submission ID</label>
+                        <input type="text" id="input-submission" placeholder="Submission ID" required>
                     </div>
-                    <div class="benefit-item">
-                        <span class="benefit-icon">✓</span>
-                        <span>Complete application review by our team</span>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="input-email" placeholder="Email Address" required>
                     </div>
-                    <div class="benefit-item">
-                        <span class="benefit-icon">✓</span>
-                        <span>Matching with relevant lenders</span>
+                    
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="input-fullname" placeholder="Full Name" required>
                     </div>
-                    <div class="benefit-item">
-                        <span class="benefit-icon">✓</span>
-                        <span>Priority processing (48-72 hours)</span>
-                    </div>
-                    <div class="benefit-item">
-                        <span class="benefit-icon">✓</span>
-                        <span>Direct communication with matched lenders</span>
-                    </div>
-                    <div class="benefit-item">
-                        <span class="benefit-icon">✓</span>
-                        <span>No hidden fees or ongoing charges</span>
-                    </div>
+                    
+                    <div id="loading-message" style="display: none;">Creating secure payment session...</div>
+                    
+                    <button id="payment-button" class="btn btn-primary">Proceed to Secure Payment</button>
+                    <button class="btn btn-secondary">Go Back</button>
                 </div>
             </div>
             
-            <div class="main-content">
-                <h2>Enter Your Information</h2>
-                
-                <div class="form-group">
-                    <label for="submission-id">Submission ID</label>
-                    <input type="text" id="input-submission" placeholder="Submission ID" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="input-email" placeholder="Email Address" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="input-fullname" placeholder="Full Name" required>
-                </div>
-                
-                <div id="loading-message" style="display: none;">Creating secure payment session...</div>
-                
-                <button id="payment-button" class="btn btn-primary">Proceed to Secure Payment</button>
-                <button class="btn btn-secondary">Go Back</button>
-                
-                <div class="support">
-                    <p>Questions?<br>
-                    Contact our support team for assistance with your application.</p>
-                </div>
+            <div class="support">
+                <p>Questions?<br>
+                Contact our support team for assistance with your application.</p>
             </div>
-        </div>
+        </main>
     </div>
+
 <script>
-// Получаем параметры из URL
+// Get parameters from URL
 const urlParams = new URLSearchParams(window.location.search);
 const submissionId = urlParams.get('submission_id');
 const email = urlParams.get('email');
 const fullName = urlParams.get('full_name');
 
-// Декодируем email (убираем %40 и заменяем на @)
+// Decode email (remove %40 and replace with @)
 const decodedEmail = email ? decodeURIComponent(email) : '';
 
-// Ждем загрузки страницы
+// Wait for page load
 document.addEventListener('DOMContentLoaded', function() {
-    // Заполняем Application Summary
+    // Fill Application Summary
     if (submissionId) {
         const summarySubmission = document.getElementById('summary-submission');
         if (summarySubmission) summarySubmission.textContent = submissionId;
@@ -414,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (summaryApplicant) summaryApplicant.textContent = fullName;
     }
     
-    // Заполняем поля ввода
+    // Fill input fields
     if (submissionId) {
         const inputSubmission = document.getElementById('input-submission');
         if (inputSubmission) inputSubmission.value = submissionId;
@@ -431,22 +476,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-    <script>
+
+<script>
 document.addEventListener('DOMContentLoaded', function() {
     const paymentButton = document.getElementById('payment-button');
     const loadingMessage = document.getElementById('loading-message');
     
     if (paymentButton && loadingMessage) {
         paymentButton.addEventListener('click', function() {
-            // Показываем сообщение о загрузке
+            // Show loading message
             loadingMessage.style.display = 'block';
             
-            // Опционально: отключаем кнопку чтобы избежать повторных нажатий
+            // Optionally: disable button to avoid repeated clicks
             paymentButton.disabled = true;
             paymentButton.textContent = 'Processing...';
             
-            // Здесь будет ваша логика обработки платежа
-            // Например, перенаправление на Stripe или другие действия
+            // Here will be your payment processing logic
+            // For example, redirect to Stripe or other actions
         });
     }
 });
