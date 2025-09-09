@@ -234,9 +234,9 @@
                     <input type="text" id="input-fullname" placeholder="Full Name" required>
                 </div>
                 
-                <div class="loading">Creating secure payment session...</div>
+                <div id="loading-message" style="display: none;">Creating secure payment session...</div>
                 
-                <button class="btn btn-primary">Proceed to Secure Payment</button>
+                <button id="payment-button" class="btn btn-primary">Proceed to Secure Payment</button>
                 <button class="btn btn-secondary">Go Back</button>
                 
                 <div class="support">
@@ -288,6 +288,26 @@ document.addEventListener('DOMContentLoaded', function() {
     if (fullName) {
         const inputFullname = document.getElementById('input-fullname');
         if (inputFullname) inputFullname.value = fullName;
+    }
+});
+</script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentButton = document.getElementById('payment-button');
+    const loadingMessage = document.getElementById('loading-message');
+    
+    if (paymentButton && loadingMessage) {
+        paymentButton.addEventListener('click', function() {
+            // Показываем сообщение о загрузке
+            loadingMessage.style.display = 'block';
+            
+            // Опционально: отключаем кнопку чтобы избежать повторных нажатий
+            paymentButton.disabled = true;
+            paymentButton.textContent = 'Processing...';
+            
+            // Здесь будет ваша логика обработки платежа
+            // Например, перенаправление на Stripe или другие действия
+        });
     }
 });
 </script>
