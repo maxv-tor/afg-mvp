@@ -179,16 +179,9 @@
                 
                 <div class="app-summary">
                     <h2>Application Summary</h2>
-                    <div class="summary-item">
-                        <span class="summary-label">Applicant:</span>
-                        <span>-</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Email:</span>
-                        <span>-</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="summary-label">Submission ID:</span>
+                    <div>Applicant: <span id="summary-applicant">-</span></div>
+                    <div >Email: <span id="summary-email">-</span></div>
+                    <div>Submission ID: <span id="summary-submission">-</span>
                         <span>-</span>
                     </div>
                 </div>
@@ -228,17 +221,17 @@
                 
                 <div class="form-group">
                     <label for="submission-id">Submission ID</label>
-                    <input type="text" id="submission-id" required>
+                    <input type="text" id="input-submission" placeholder="Submission ID" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" required>
+                    <input type="email" id="input-email" placeholder="Email Address" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="name">Full Name</label>
-                    <input type="text" id="name" required>
+                    <input type="text" id="input-fullname" placeholder="Full Name" required>
                 </div>
                 
                 <div class="loading">Creating secure payment session...</div>
@@ -253,8 +246,8 @@
             </div>
         </div>
     </div>
-    <script>
-    // Получаем параметры из URL
+<script>
+// Получаем параметры из URL
 const urlParams = new URLSearchParams(window.location.search);
 const submissionId = urlParams.get('submission_id');
 const email = urlParams.get('email');
@@ -263,23 +256,40 @@ const fullName = urlParams.get('full_name');
 // Декодируем email (убираем %40 и заменяем на @)
 const decodedEmail = email ? decodeURIComponent(email) : '';
 
-// Подставляем значения в соответствующие элементы
+// Ждем загрузки страницы
 document.addEventListener('DOMContentLoaded', function() {
-    // Ищем элементы по тексту и обновляем их
-    const elements = document.querySelectorAll('*');
+    // Заполняем Application Summary
+    if (submissionId) {
+        const summarySubmission = document.getElementById('summary-submission');
+        if (summarySubmission) summarySubmission.textContent = submissionId;
+    }
     
-    elements.forEach(element => {
-        if (element.textContent.includes('Applicant:') && element.textContent.includes('-')) {
-            element.innerHTML = element.innerHTML.replace('Applicant:<br>-', `Applicant:<br>${fullName || '-'}`);
-        }
-        if (element.textContent.includes('Email:') && element.textContent.includes('-')) {
-            element.innerHTML = element.innerHTML.replace('Email:<br>-', `Email:<br>${decodedEmail || '-'}`);
-        }
-        if (element.textContent.includes('Submission ID:') && element.textContent.includes('-')) {
-            element.innerHTML = element.innerHTML.replace('Submission ID:<br>-', `Submission ID:<br>${submissionId || '-'}`);
-        }
-    });
+    if (decodedEmail) {
+        const summaryEmail = document.getElementById('summary-email');
+        if (summaryEmail) summaryEmail.textContent = decodedEmail;
+    }
+    
+    if (fullName) {
+        const summaryApplicant = document.getElementById('summary-applicant');
+        if (summaryApplicant) summaryApplicant.textContent = fullName;
+    }
+    
+    // Заполняем поля ввода
+    if (submissionId) {
+        const inputSubmission = document.getElementById('input-submission');
+        if (inputSubmission) inputSubmission.value = submissionId;
+    }
+    
+    if (decodedEmail) {
+        const inputEmail = document.getElementById('input-email');
+        if (inputEmail) inputEmail.value = decodedEmail;
+    }
+    
+    if (fullName) {
+        const inputFullname = document.getElementById('input-fullname');
+        if (inputFullname) inputFullname.value = fullName;
+    }
 });
-        </script>
+</script>
 </body>
 </html>
