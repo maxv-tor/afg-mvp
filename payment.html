@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Complete Your Application - Payment Required</title>
-<style>
+
+    <style>
     * {
         margin: 0;
         padding: 0;
@@ -28,125 +29,97 @@
         overflow: hidden;
     }
 
-    .header {
+    header {
         background-color: #1a56db;
         color: white;
-        padding: 30px;
+        padding: 25px;
         text-align: center;
     }
 
-    .logo {
-        width: 120px;
+    .logo img {
+        max-width: 180px;
         height: auto;
-        margin-bottom: 20px;
+    }
+
+    .main-content {
+        padding: 40px;
     }
 
     h1 {
         font-size: 28px;
         font-weight: 600;
-        margin-bottom: 10px;
+        color: #1a56db;
+        margin-bottom: 12px;
+        text-align: center;
     }
 
     .subtitle {
-        font-size: 16px;
-        opacity: 0.95;
-        font-weight: 300;
+        font-size: 15px;
+        color: #6b7280;
+        text-align: center;
+        margin-bottom: 30px;
     }
 
-    .secure-banner {
+    .secure-payment-notice {
         background-color: #e0f2fe;
         padding: 18px 25px;
-        margin: 25px;
+        margin-bottom: 30px;
         border-radius: 8px;
         border-left: 4px solid #1a56db;
         color: #0c4a6e;
-        display: flex;
-        align-items: center;
-        gap: 12px;
     }
 
-    .secure-banner::before {
-        content: "🔒";
-        font-size: 20px;
-    }
-
-    .secure-text {
-        flex: 1;
-        line-height: 1.5;
-    }
-
-    .secure-text strong {
-        display: block;
-        margin-bottom: 4px;
+    .secure-payment-notice strong {
         color: #1a56db;
+        display: block;
+        margin-bottom: 5px;
     }
 
-    .content-wrapper {
-        padding: 30px;
+    .price {
+        font-size: 48px;
+        font-weight: bold;
+        color: #1a56db;
+        text-align: center;
+        margin: 30px 0;
     }
 
-    .pricing-section {
+    .benefits {
         background: #f9fafb;
         border-radius: 10px;
         padding: 25px;
-        margin-bottom: 30px;
+        margin-bottom: 35px;
         border: 1px solid #e5e7eb;
     }
 
-    .price-display {
-        text-align: center;
-        margin-bottom: 25px;
-    }
-
-    .price-amount {
-        font-size: 42px;
-        font-weight: bold;
-        color: #1a56db;
-        margin-bottom: 8px;
-    }
-
-    .price-description {
-        color: #6b7280;
-        font-size: 14px;
-    }
-
-    .features-list {
-        list-style: none;
-    }
-
-    .feature-item {
+    .benefit-item {
         padding: 12px 0;
         display: flex;
         align-items: center;
         border-bottom: 1px solid #e5e7eb;
     }
 
-    .feature-item:last-child {
+    .benefit-item:last-child {
         border-bottom: none;
     }
 
-    .feature-check {
+    .benefit-icon {
         color: #10b981;
         margin-right: 12px;
         font-size: 18px;
         font-weight: bold;
     }
 
-    .feature-text {
+    .benefit-item span:last-child {
         color: #374151;
         font-size: 15px;
     }
 
-    .form-section {
-        margin-top: 30px;
-    }
-
-    .section-title {
+    h2 {
         font-size: 22px;
         font-weight: 600;
         color: #1a56db;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
+        margin-bottom: 25px;
+        padding-bottom: 12px;
         border-bottom: 2px solid #e5e7eb;
     }
 
@@ -154,7 +127,7 @@
         margin-bottom: 20px;
     }
 
-    .form-label {
+    .form-group label {
         display: block;
         margin-bottom: 8px;
         font-weight: 600;
@@ -162,7 +135,7 @@
         font-size: 14px;
     }
 
-    .form-input {
+    .form-group input {
         width: 100%;
         padding: 12px 15px;
         border: 2px solid #e5e7eb;
@@ -172,27 +145,31 @@
         background: #f9fafb;
     }
 
-    .form-input:focus {
+    .form-group input:focus {
         outline: none;
         border-color: #1a56db;
         background: white;
         box-shadow: 0 0 0 4px rgba(26, 86, 219, 0.1);
     }
 
-    .form-input[readonly] {
+    .form-group input[readonly] {
         background: #f3f4f6;
         color: #6b7280;
         cursor: not-allowed;
     }
 
-    .button-group {
-        display: flex;
-        gap: 15px;
-        margin-top: 30px;
+    #loading-message {
+        text-align: center;
+        color: #1a56db;
+        font-style: italic;
+        margin: 20px 0;
+        padding: 15px;
+        background: #f0f9ff;
+        border-radius: 6px;
     }
 
     .btn {
-        flex: 1;
+        width: 100%;
         padding: 16px 24px;
         border: none;
         border-radius: 8px;
@@ -201,6 +178,7 @@
         cursor: pointer;
         transition: all 0.3s ease;
         text-align: center;
+        margin-bottom: 12px;
     }
 
     .btn-primary {
@@ -209,7 +187,7 @@
         box-shadow: 0 4px 6px rgba(26, 86, 219, 0.25);
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
         background-color: #1e40af;
         transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(26, 86, 219, 0.35);
@@ -226,45 +204,26 @@
         border-color: #d1d5db;
     }
 
-    .loading-message {
-        text-align: center;
-        color: #1a56db;
-        font-style: italic;
-        margin: 20px 0;
-        display: none;
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
     }
 
-    .loading-message.active {
-        display: block;
+    .btn:active:not(:disabled) {
+        transform: scale(0.98);
     }
 
-    .support-section {
+    .support {
         text-align: center;
-        margin-top: 40px;
+        margin-top: 35px;
         padding-top: 30px;
         border-top: 1px solid #e5e7eb;
-    }
-
-    .support-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 8px;
-    }
-
-    .support-text {
         color: #6b7280;
         font-size: 14px;
     }
 
-    .support-link {
-        color: #1a56db;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .support-link:hover {
-        text-decoration: underline;
+    .support p {
+        line-height: 1.6;
     }
 
     @media (max-width: 768px) {
@@ -272,28 +231,46 @@
             padding: 10px;
         }
 
-        .header {
-            padding: 20px;
+        .main-content {
+            padding: 25px;
         }
 
         h1 {
             font-size: 24px;
         }
 
-        .content-wrapper {
+        .price {
+            font-size: 40px;
+        }
+
+        .benefits {
             padding: 20px;
         }
 
-        .price-amount {
+        .benefit-item {
+            padding: 10px 0;
+        }
+
+        .benefit-item span:last-child {
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .main-content {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 22px;
+        }
+
+        .price {
             font-size: 36px;
         }
 
-        .button-group {
-            flex-direction: column;
-        }
-
-        .btn {
-            width: 100%;
+        .logo img {
+            max-width: 150px;
         }
     }
 
@@ -313,17 +290,10 @@
         animation: fadeIn 0.5s ease;
     }
 
-    /* Дополнительные стили для улучшения UX */
-    .btn:active {
-        transform: scale(0.98);
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 
-    .btn:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-
-    /* Иконка загрузки */
     .spinner {
         display: inline-block;
         width: 16px;
@@ -334,11 +304,8 @@
         animation: spin 0.8s linear infinite;
         margin-right: 8px;
     }
-
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
 </style>
+
 </head>
 <body>
     <div class="container">
