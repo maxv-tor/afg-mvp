@@ -5,49 +5,332 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Complete Your Application - Payment Required</title>
 <style>
-/* Изменяем только header, остальное оставляем как есть */
-.header, header, .main-header {
-    background: #ffffff !important;
-    background-image: none !important;
-    color: #333333 !important;
-    border-bottom: 1px solid #e9ecef;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Заголовки в header */
-.header h1, header h1, .header .title, header .title {
-    color: #333333 !important;
-}
-
-.header .subtitle, header .subtitle, .header .description, header .description {
-    color: #6c757d !important;
-}
-
-/* Логотип остается синим */
-.logo, .brand {
-    background-color: #4f46e5 !important;
-}
-
-/* Остальные элементы оставляем без изменений */
 body {
-    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f7fa;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header with logo */
+.header {
+    background: linear-gradient(135deg, #2c5aa0 0%, #1e3a6f 100%);
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 8px;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2c5aa0;
+    font-weight: bold;
+}
+
+/* Main content */
+.main-content {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #2c5aa0;
+    font-size: 28px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+
+.secure-payment-notice {
+    background: #e8f5e8;
+    border: 1px solid #4caf50;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 30px;
+}
+
+.secure-payment-notice strong {
+    color: #2e7d32;
+}
+
+/* Application Summary */
+.application-summary {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid #e9ecef;
+}
+
+.application-summary h2 {
+    color: #2c5aa0;
+    font-size: 22px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #2c5aa0;
+    padding-bottom: 10px;
+}
+
+.applicant-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    color: #333;
+    font-size: 16px;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.price-highlight {
+    background: linear-gradient(135deg, #2c5aa0 0%, #1e3a6f 100%);
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Features list */
+.features-list {
+    list-style: none;
+    margin: 20px 0;
+}
+
+.features-list li {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.features-list li:last-child {
+    border-bottom: none;
+}
+
+.features-list li:before {
+    content: "✓";
+    color: #4caf50;
+    font-weight: bold;
+    font-size: 18px;
+    margin-right: 12px;
+    width: 20px;
+}
+
+/* Form section */
+.form-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid #e9ecef;
+}
+
+.form-section h2 {
+    color: #2c5aa0;
+    font-size: 22px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #2c5aa0;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #2c5aa0;
+    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+}
+
+/* Loading indicator */
+.loading-indicator {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px dashed #ccc;
+}
+
+/* Buttons */
+.button-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.btn {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2c5aa0 0%, #1e3a6f 100%);
+    color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* Support section */
+.support-section {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin-top: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.support-section h3 {
+    color: #2c5aa0;
+    margin-bottom: 10px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .main-content, .form-section, .application-summary {
+        padding: 20px;
+    }
+    
+    .applicant-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .button-group {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    h1 {
+        font-size: 24px;
+    }
 }
 </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="logo-container">
+            <div class="logo">
                 <a href="https://altfundsglobal.com/" aria-label="Alt Funds Global Homepage">
                     <img src="https://altfundsglobal.com/wp-content/uploads/2024/01/afg-logo-secondary-reverse2.png" alt="Alt Funds Global Logo" style="max-width: 200px; height: auto;">
                 </a>
             </div>
-            <h1>Complete Your Application</h1>
-            <div class="subtitle">A small processing fee is required to proceed with your funding application review</div>
         </header>
         
-        <div class="content">
-            <div class="left-panel">
-                <div class="secure-payment">
+        <main class=main-content">
+            <h1>Complete Your Application</h1>
+            <p class="subtitle">A small processing fee is required to proceed with your funding application review</p>
+        
+                <div class="secure-payment-notice">
                     <strong>Secure Payment:</strong>
                     Your payment is processed securely through Stripe. We never store your payment information.
                 </div>
