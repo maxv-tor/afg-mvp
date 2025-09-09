@@ -253,5 +253,33 @@
             </div>
         </div>
     </div>
+    <script>
+    // Получаем параметры из URL
+const urlParams = new URLSearchParams(window.location.search);
+const submissionId = urlParams.get('submission_id');
+const email = urlParams.get('email');
+const fullName = urlParams.get('full_name');
+
+// Декодируем email (убираем %40 и заменяем на @)
+const decodedEmail = email ? decodeURIComponent(email) : '';
+
+// Подставляем значения в соответствующие элементы
+document.addEventListener('DOMContentLoaded', function() {
+    // Ищем элементы по тексту и обновляем их
+    const elements = document.querySelectorAll('*');
+    
+    elements.forEach(element => {
+        if (element.textContent.includes('Applicant:') && element.textContent.includes('-')) {
+            element.innerHTML = element.innerHTML.replace('Applicant:<br>-', `Applicant:<br>${fullName || '-'}`);
+        }
+        if (element.textContent.includes('Email:') && element.textContent.includes('-')) {
+            element.innerHTML = element.innerHTML.replace('Email:<br>-', `Email:<br>${decodedEmail || '-'}`);
+        }
+        if (element.textContent.includes('Submission ID:') && element.textContent.includes('-')) {
+            element.innerHTML = element.innerHTML.replace('Submission ID:<br>-', `Submission ID:<br>${submissionId || '-'}`);
+        }
+    });
+});
+        </script>
 </body>
 </html>
