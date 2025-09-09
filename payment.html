@@ -4,159 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Complete Your Application - Payment Required</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            margin: 0;
-            padding: 0;
-            color: #2c3e50;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        header {
-            background-color: #1a56db;
-            color: white;
-            padding: 20px;
-            border-radius: 8px 8px 0 0;
-            text-align: center;
-        }
-        .logo-container {
-            margin-bottom: 15px;
-        }
-        h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-        .subtitle {
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        .content {
-            display: flex;
-            flex-wrap: wrap;
-            background-color: white;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        .left-panel {
-            flex: 1;
-            min-width: 300px;
-            padding: 25px;
-            background-color: #f9fafb;
-            border-right: 1px solid #e5e7eb;
-        }
-        .right-panel {
-            flex: 1;
-            min-width: 300px;
-            padding: 25px;
-        }
-        .secure-payment {
-            background-color: #e0f2fe;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            color: #0c4a6e;
-            border-left: 4px solid #1a56db;
-        }
-        .app-summary {
-            margin-bottom: 25px;
-        }
-        .summary-item {
-            margin-bottom: 10px;
-            display: flex;
-        }
-        .summary-label {
-            font-weight: bold;
-            min-width: 120px;
-        }
-        .benefits {
-            margin: 25px 0;
-        }
-        .benefit-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .benefit-icon {
-            color: #1a56db;
-            margin-right: 10px;
-            font-weight: bold;
-        }
-        .price {
-            font-size: 28px;
-            font-weight: bold;
-            color: #1a56db;
-            margin: 20px 0;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #374151;
-        }
-        input[type="text"], input[type="email"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 16px;
-            box-sizing: border-box;
-            transition: border-color 0.2s;
-        }
-        input[type="text"]:focus, input[type="email"]:focus {
-            border-color: #1a56db;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.15);
-        }
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            transition: background-color 0.2s;
-        }
-        .btn-primary {
-            background-color: #1a56db;
-            color: white;
-            margin-bottom: 15px;
-        }
-        .btn-primary:hover {
-            background-color: #1e40af;
-        }
-        .btn-secondary {
-            background-color: #f3f4f6;
-            color: #374151;
-        }
-        .btn-secondary:hover {
-            background-color: #e5e7eb;
-        }
-        .support {
-            text-align: center;
-            margin-top: 30px;
-            color: #6b7280;
-            font-size: 14px;
-        }
-        .loading {
-            color: #1a56db;
-            text-align: center;
-            font-style: italic;
-            margin: 15px 0;
-        }
-    </style>
+<style>
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.header, header {
+    background-color: #ffffff;
+    background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+    color: #333333;
+    border-bottom: 1px solid #e9ecef;
+    padding: 2rem 0;
+}
+
+h1, .main-title {
+    color: #333333 !important;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle, .description {
+    color: #6c757d !important;
+    font-size: 1.1rem;
+}
+
+.application-summary, .information-form {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.payment-button, button[type="submit"] {
+    background-color: #007bff !important;
+    border: 1px solid #007bff !important;
+    color: white !important;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.payment-button:hover, button[type="submit"]:hover {
+    background-color: #0056b3 !important;
+    border-color: #0056b3 !important;
+}
+
+input[type="text"], input[type="email"] {
+    border: 1px solid #ced4da !important;
+    border-radius: 4px;
+    padding: 10px 12px;
+    background-color: #ffffff;
+}
+
+input[type="text"]:focus, input[type="email"]:focus {
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+}
+</style>
 </head>
 <body>
     <div class="container">
