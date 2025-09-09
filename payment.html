@@ -5,64 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Complete Your Application - Payment Required</title>
 <style>
+/* Изменяем только header, остальное оставляем как есть */
+.header, header, .main-header {
+    background: #ffffff !important;
+    background-image: none !important;
+    color: #333333 !important;
+    border-bottom: 1px solid #e9ecef;
+}
+
+/* Заголовки в header */
+.header h1, header h1, .header .title, header .title {
+    color: #333333 !important;
+}
+
+.header .subtitle, header .subtitle, .header .description, header .description {
+    color: #6c757d !important;
+}
+
+/* Логотип остается синим */
+.logo, .brand {
+    background-color: #4f46e5 !important;
+}
+
+/* Остальные элементы оставляем без изменений */
 body {
     background-color: #f8f9fa;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-}
-
-.header, header {
-    background-color: #ffffff;
-    background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
-    color: #333333;
-    border-bottom: 1px solid #e9ecef;
-    padding: 2rem 0;
-}
-
-h1, .main-title {
-    color: #333333 !important;
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.subtitle, .description {
-    color: #6c757d !important;
-    font-size: 1.1rem;
-}
-
-.application-summary, .information-form {
-    background-color: #ffffff;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.payment-button, button[type="submit"] {
-    background-color: #007bff !important;
-    border: 1px solid #007bff !important;
-    color: white !important;
-    padding: 12px 24px;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.payment-button:hover, button[type="submit"]:hover {
-    background-color: #0056b3 !important;
-    border-color: #0056b3 !important;
-}
-
-input[type="text"], input[type="email"] {
-    border: 1px solid #ced4da !important;
-    border-radius: 4px;
-    padding: 10px 12px;
-    background-color: #ffffff;
-}
-
-input[type="text"]:focus, input[type="email"]:focus {
-    border-color: #007bff !important;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
 }
 </style>
 </head>
