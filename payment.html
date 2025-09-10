@@ -552,14 +552,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         return true;
     }
-
-            localStorage.setItem('submission_id', submissionId);
-            localStorage.setItem('email', email);
-            localStorage.setItem('full_name', fullName);
-            sessionStorage.setItem('submission_id', submissionId);
-            sessionStorage.setItem('email', email);
-            sessionStorage.setItem('full_name', fullName);
-
     
     // Create payment session
     async function createPaymentSession() {
@@ -569,6 +561,14 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoading(true);
 
         try {
+            // Save data to storage before creating session
+            localStorage.setItem('submission_id', submissionId);
+            localStorage.setItem('email', clientEmail);
+            localStorage.setItem('full_name', fullName);
+            sessionStorage.setItem('submission_id', submissionId);
+            sessionStorage.setItem('email', clientEmail);
+            sessionStorage.setItem('full_name', fullName);
+
             const response = await fetch('https://contentlabs.app.n8n.cloud/webhook/create-payment-session', {
                 method: 'POST',
                 headers: {
