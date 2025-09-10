@@ -258,8 +258,9 @@
             return urlParams.get(name);
         }
         
-        // Get session_id from URL
+        // Get parameters from URL
         const sessionId = getUrlParameter('session_id');
+        const submissionId = getUrlParameter('submission_id');
         
         // Update the page with current date
         document.getElementById('paymentDate').textContent = new Date().toLocaleDateString('en-US', {
@@ -281,12 +282,14 @@
             document.getElementById('actionsSection').style.display = 'none';
             document.getElementById('loadingSection').style.display = 'block';
             
-            // Get stored data
-            let submissionId = localStorage.getItem('submission_id') || sessionStorage.getItem('submission_id');
+            // Get submission_id from URL first, then fallback to storage
+            let finalSubmissionId = submissionId || localStorage.getItem('submission_id') || sessionStorage.getItem('submission_id');
+            
+            // Get other data from storage
             let email = localStorage.getItem('email') || sessionStorage.getItem('email');
             let fullName = localStorage.getItem('full_name') || sessionStorage.getItem('full_name');
             
-            if (!submissionId) {
+            if (!finalSubmissionId) {
                 alert('Unable to find your application details. Please contact support.');
                 document.getElementById('loadingSection').style.display = 'none';
                 document.getElementById('actionsSection').style.display = 'block';
@@ -295,7 +298,7 @@
             
             // Build webhook URL with parameters
             const webhookUrl = new URL('https://contentlabs.app.n8n.cloud/webhook/process-matching-workflow');
-            webhookUrl.searchParams.append('submission_id', submissionId);
+            webhookUrl.searchParams.append('submission_id', finalSubmissionId);
             if (email) webhookUrl.searchParams.append('email', email);
             if (fullName) webhookUrl.searchParams.append('full_name', fullName);
             if (sessionId) webhookUrl.searchParams.append('session_id', sessionId);
