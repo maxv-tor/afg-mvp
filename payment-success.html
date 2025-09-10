@@ -368,28 +368,6 @@
         */
     </script>
 
-<script>
-// Получаем session_id из URL
-const urlParams = new URLSearchParams(window.location.search);
-const sessionId = urlParams.get('session_id');
-
-// Если session_id есть в URL, показываем его
-if (sessionId) {
-    const transactionElement = document.getElementById('transactionId');
-    if (transactionElement) {
-        transactionElement.textContent = sessionId;
-    }
-}
-
-// Показываем текущую дату
-const paymentDateElement = document.getElementById('paymentDate');
-if (paymentDateElement) {
-    const currentDate = new Date();
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const formattedDate = currentDate.toLocaleDateString('en-US', options);
-    paymentDateElement.textContent = formattedDate;
-}
-</script>
     
 </body>
 </html>
