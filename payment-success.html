@@ -274,100 +274,43 @@
         }
         
         // Handle proceed button click
-        document.getElementById('proceedBtn').addEventListener('click', async function(e) {
+        document.getElementById('proceedBtn').addEventListener('click', function(e) {
             e.preventDefault();
             
             // Show loading state
             document.getElementById('actionsSection').style.display = 'none';
             document.getElementById('loadingSection').style.display = 'block';
             
-            try {
-                // First, we need to retrieve the submission details from the payment session
-                // This would typically be done through an API call to get the metadata from Stripe session
-                // For now, we'll retrieve it from localStorage or sessionStorage if it was saved during payment
-                
-                let submissionId = localStorage.getItem('submission_id');
-                let email = localStorage.getItem('email');
-                let fullName = localStorage.getItem('full_name');
-                
-                // If not in localStorage, check sessionStorage
-                if (!submissionId) {
-                    submissionId = sessionStorage.getItem('submission_id');
-                    email = sessionStorage.getItem('email');
-                    fullName = sessionStorage.getItem('full_name');
-                }
-                
-                if (!submissionId) {
-                    // If we still don't have the data, we need to show an error
-                    alert('Unable to find your application details. Please contact support.');
-                    document.getElementById('loadingSection').style.display = 'none';
-                    document.getElementById('actionsSection').style.display = 'block';
-                    return;
-                }
-                
-                // Build the webhook URL with parameters
-                const webhookUrl = new URL('https://contentlabs.app.n8n.cloud/webhook/process-matching-workflow');
-                webhookUrl.searchParams.append('submission_id', submissionId);
-                if (email) webhookUrl.searchParams.append('email', email);
-                if (fullName) webhookUrl.searchParams.append('full_name', fullName);
-                
-                // Make a POST request to trigger the workflow
-                const response = await fetch(webhookUrl.toString(), {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        submission_id: submissionId,
-                        trigger: 'payment_completed',
-                        session_id: sessionId
-                    })
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    
-                    // Clear stored data
-                    localStorage.removeItem('submission_id');
-                    localStorage.removeItem('email');
-                    localStorage.removeItem('full_name');
-                    sessionStorage.removeItem('submission_id');
-                    sessionStorage.removeItem('email');
-                    sessionStorage.removeItem('full_name');
-                    
-                    // Show success message
-                    alert(`Great news! We found ${result.matches_generated || 'several'} potential lenders for you. You'll receive an email shortly with all the details.`);
-                    
-                    // Optionally redirect to a dashboard or success page
-                    // window.location.href = '/dashboard';
-                } else {
-                    throw new Error('Failed to process matching');
-                }
-                
-            } catch (error) {
-                console.error('Error:', error);
-                alert('There was an error processing your request. Please try again or contact support.');
-            } finally {
-                // Hide loading state
+            // Get stored data
+            let submissionId = localStorage.getItem('submission_id') || sessionStorage.getItem('submission_id');
+            let email = localStorage.getItem('email') || sessionStorage.getItem('email');
+            let fullName = localStorage.getItem('full_name') || sessionStorage.getItem('full_name');
+            
+            if (!submissionId) {
+                alert('Unable to find your application details. Please contact support.');
                 document.getElementById('loadingSection').style.display = 'none';
                 document.getElementById('actionsSection').style.display = 'block';
+                return;
             }
+            
+            // Build webhook URL with parameters
+            const webhookUrl = new URL('https://contentlabs.app.n8n.cloud/webhook/process-matching-workflow');
+            webhookUrl.searchParams.append('submission_id', submissionId);
+            if (email) webhookUrl.searchParams.append('email', email);
+            if (fullName) webhookUrl.searchParams.append('full_name', fullName);
+            if (sessionId) webhookUrl.searchParams.append('session_id', sessionId);
+            
+            // Clear stored data
+            localStorage.removeItem('submission_id');
+            localStorage.removeItem('email');
+            localStorage.removeItem('full_name');
+            sessionStorage.removeItem('submission_id');
+            sessionStorage.removeItem('email');
+            sessionStorage.removeItem('full_name');
+            
+            // Redirect to webhook
+            window.location.href = webhookUrl.toString();
         });
-        
-        // Alternative: Direct redirect approach (simpler but less user-friendly)
-        // Uncomment this section if you prefer automatic redirect without user interaction
-        /*
-        window.addEventListener('load', function() {
-            const submissionId = localStorage.getItem('submission_id') || sessionStorage.getItem('submission_id');
-            if (submissionId) {
-                setTimeout(() => {
-                    window.location.href = `https://contentlabs.app.n8n.cloud/webhook/process-matching-workflow?submission_id=${submissionId}`;
-                }, 3000); // Redirect after 3 seconds
-            }
-        });
-        */
     </script>
-
-    
 </body>
 </html>
