@@ -552,6 +552,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         return true;
     }
+
+            localStorage.setItem('submission_id', submissionId);
+            localStorage.setItem('email', email);
+            localStorage.setItem('full_name', fullName);
+            sessionStorage.setItem('submission_id', submissionId);
+            sessionStorage.setItem('email', email);
+            sessionStorage.setItem('full_name', fullName);
+
     
     // Create payment session
     async function createPaymentSession() {
