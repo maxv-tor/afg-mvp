@@ -178,6 +178,45 @@
       background:var(--primary-100);
     }
     .secondary-cta:active{ transform:translateY(1px); }
+    .cta-container {
+      margin-top: 20px;
+    }
+    .cta-note {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+    .policy-box {
+      background: #f8f9fa;
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      padding: 18px;
+      margin: 20px 0;
+    }
+    .policy-box h3 {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+      color: var(--text);
+    }
+    .policy-box ul {
+      margin: 0;
+      padding-left: 0;
+      list-style: none;
+    }
+    .policy-box li {
+      margin: 8px 0;
+      padding-left: 24px;
+      position: relative;
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+    .policy-box li::before {
+      content: "→";
+      position: absolute;
+      left: 4px;
+      color: var(--primary);
+    }
   </style>
 </head>
 <body>
@@ -196,17 +235,17 @@
         </p>
 
         <p>
-          If you’re an accredited investor, you’ve seen it all before:
+          If you're an accredited investor, you've seen it all before:
         </p>
 
         <ul class="list">
-          <li>Banks that can’t move fast enough.</li>
-          <li>“Relationship managers” who don’t know your name.</li>
+          <li>Banks that can't move fast enough.</li>
+          <li>"Relationship managers" who don't know your name.</li>
           <li>Endless paperwork with no real outcome.</li>
         </ul>
 
         <p>
-          This database was built for you - the investor who’s done playing by their rules.
+          This database was built for you - the investor who's done playing by their rules.
         </p>
 
         <h2 class="section">What Makes This Different?</h2>
@@ -214,18 +253,38 @@
         <ul class="list">
           <li>One application. No more filling out forms for every lender.</li>
           <li>Secure document upload. Every file goes into your private folder with a full audit trail.</li>
-          <li>Eligibility-based payments. You only pay when your documents are verified.</li>
-          <li>Transparent lender matches. You’ll see not only who fits, but why.</li>
+          <li>Upfront payment. If your file doesn't qualify, you won't be matched and we'll notify you with reasons.</li>
+          <li>Transparent lender matches. You'll see not only who fits, but why.</li>
           <li>AI-powered precision. Matches scored across industry, credit, collateral, loan size, and geography.</li>
         </ul>
+
+        <div class="policy-box">
+          <h3>Payment & Eligibility Policy</h3>
+          <ul>
+            <li><strong>Payment timing:</strong> Payment is collected at submission.</li>
+            <li><strong>Qualification check:</strong> Files are screened across credit, collateral, industry, amount, term, geography, specialization.</li>
+            <li><strong>No qualify → no match:</strong> If you're below lender thresholds (e.g., low credit and no required collateral), you'll receive a no-match result with reasons.</li>
+            <li><strong>Refunds/Credits:</strong> Platform credits are issued for qualified no-match results after manual review within 5 business days.</li>
+          </ul>
+        </div>
 
         <hr class="hr">
 
         <h2 class="section">Frequently Asked Questions & Answers</h2>
 
-        <h3 class="faq-question">How do I know I’ll be matched with the right lender?</h3>
+        <h3 class="faq-question">Do I pay upfront?</h3>
         <p class="faq-answer">
-          Because this isn’t a “lead list.” Our matching engine analyzes seven real-world criteria lenders use to approve capital: industry, loan amount, term, credit, collateral, geography, and specialization. Every match comes with a written explanation. You see the reasoning, not just a name.
+          Yes. Payment is collected at submission. If the file doesn't qualify, platform credits are issued per our policy after manual review.
+        </p>
+
+        <h3 class="faq-question">What happens if I (or my client) don't qualify?</h3>
+        <p class="faq-answer">
+          You'll get a no-match result with specific reasons (e.g., below credit thresholds and no collateral where required). Platform credits are applied per our policy after manual review within 5 business days.
+        </p>
+
+        <h3 class="faq-question">How do I know I'll be matched with the right lender?</h3>
+        <p class="faq-answer">
+          Because this isn't a "lead list." Our matching engine analyzes seven real-world criteria lenders use to approve capital: industry, loan amount, term, credit, collateral, geography, and specialization. Every match comes with a written explanation. You see the reasoning, not just a name.
         </p>
 
         <h3 class="faq-question">Is my information safe?</h3>
@@ -235,12 +294,12 @@
 
         <h3 class="faq-question">Is this just another expensive tool?</h3>
         <p class="faq-answer">
-          No. In fact, it saves you money. Instead of taking a 2.5% commission on finding you a lender, we charge a small nominal fee to instantly find you a lender that matches your requirements (information is based on the quality of the paperwork you provide and ai’s ability to connect).
+          No. In fact, it saves you money. Instead of taking a 2.5% commission on finding you a lender, we charge a small nominal fee to instantly find you a lender that matches your requirements (information is based on the quality of the paperwork you provide and ai's ability to connect).
         </p>
 
         <h3 class="faq-question">Will I get stuck in a black box?</h3>
         <p class="faq-answer">
-          Never. Transparency is the point. You’ll see your top matches, why they fit, and how your profile scored. It’s the opposite of the bank “black box” experience.
+          Never. Transparency is the point. You'll see your top matches, why they fit, and how your profile scored. It's the opposite of the bank "black box" experience.
         </p>
 
         <h3 class="faq-question">What kind of investors use this?</h3>
@@ -254,22 +313,24 @@
 
         <hr class="hr">
 
-        <h2 class="section">Why Accredited Investors Trust Us</h2>
+        <h2 class="section">For Brokers</h2>
+        <p>
+          Upfront payment with eligibility safeguards: submit client files, see transparent reasons for matches/declines, and receive platform credits if a file doesn't qualify after manual review.
+        </p>
 
-        <ul class="list">
-          <li>Stripe Secure Payments</li>
-          <li>Google Drive Document Security</li>
-          <li>SHA-256 Agreement Integrity</li>
-          <li>Audit-Ready Lending Platform</li>
-        </ul>
+        <hr class="hr">
 
         <h2 class="section">Take Back Control of Your Deal Flow</h2>
 
         <p>
-          Banks aren’t built for speed. This is.
+          Banks aren't built for speed. This is.
         </p>
 
-        <a class="cta" href="https://maxv-tor.github.io/afg-mvp/index.html">Start My Application</a>
+        <div class="cta-container">
+          <a class="cta" href="https://maxv-tor.github.io/afg-mvp/index.html">Start My Application</a>
+          <p class="cta-note">Payment is collected at submission. If your file doesn't meet lender thresholds, you'll receive a full refund.</p>
+        </div>
+
         <hr class="hr">
 
         <p class="small muted" style="text-align: center; margin-top: 20px;">
