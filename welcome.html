@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Welcome to the Funding Application Portal</title>
+  <title>Where Accredited Investors Find the Right Lenders</title>
   <meta name="color-scheme" content="light">
   <style>
     :root{
@@ -152,6 +152,32 @@
       border-top:1px solid var(--border-soft);
       margin:18px 0;
     }
+    .faq-question {
+      margin:18px 0 8px;
+      font-weight:700;
+      color:var(--text);
+      font-size:18px;
+    }
+    .faq-answer {
+      margin:0 0 14px;
+      color:var(--text-muted);
+    }
+    .secondary-cta {
+      display:inline-block;
+      padding:12px 22px;
+      border-radius:8px;
+      font-weight:600;
+      text-decoration:none;
+      border:2px solid var(--primary);
+      color:var(--primary);
+      background:transparent;
+      transition:background .2s, border-color .2s, transform .06s;
+      margin-left:10px;
+    }
+    .secondary-cta:hover {
+      background:var(--primary-100);
+    }
+    .secondary-cta:active{ transform:translateY(1px); }
   </style>
 </head>
 <body>
@@ -159,76 +185,89 @@
     <div class="card">
       <header>
         <a href="https://altfundsglobal.com/" aria-label="Alt Funds Global Homepage">
-  <img src="https://smart-rabbit.tech/wp-content/afg-logo-secondary-reverse-m.png" alt="Alt Funds Global Logo" style="max-width: 200px; height: auto;">
-</a>
-        <h1>Welcome to the Funding Application Portal</h1>
+          <img src="https://smart-rabbit.tech/wp-content/afg-logo-secondary-reverse-m.png" alt="Alt Funds Global Logo" style="max-width: 200px; height: auto;">
+        </a>
+        <h1>Where Accredited Investors Find the Right Lenders</h1>
       </header>
 
       <div class="content">
         <p class="lead">
-          Before you begin, please take a moment to review the requirements.<br><br>
-          As part of our Know Your Customer (KYC) policy, all applicants must provide scanned copies
-          of certain identification and business documents.<br><br>
-          This is a regulatory requirement designed to protect both you and our institution.
+          Secure. Transparent. No wasted time. No bank runaround.
         </p>
 
-        <h2 class="section">1. Documents you may be asked to provide</h2>
+        <p>
+          If you’re an accredited investor, you’ve seen it all before:
+        </p>
 
-        <div class="grid grid-2">
-          <div class="card-lite">
-            <strong>1.1. Personal Identification</strong>
-            <ul class="list">
-              <li>Valid passport, or</li>
-              <li>Government-issued ID card, or</li>
-              <li>Driver’s license</li>
-            </ul>
-          </div>
+        <ul class="list">
+          <li>Banks that can’t move fast enough.</li>
+          <li>“Relationship managers” who don’t know your name.</li>
+          <li>Endless paperwork with no real outcome.</li>
+        </ul>
 
-          <div class="card-lite">
-            <strong>1.2. Proof of Address</strong>
-            <ul class="list">
-              <li>Recent utility bill, or</li>
-              <li>Bank statement, or</li>
-              <li>Official government correspondence (issued within the last 3 months)</li>
-            </ul>
-          </div>
+        <p>
+          This database was built for you — the investor who’s done playing by their rules.
+        </p>
 
-          <div class="card-lite">
-            <strong>1.3. Business Documentation (for companies)</strong>
-            <ul class="list">
-              <li>Certificate of Incorporation / Business Registration</li>
-              <li>Articles of Association or Partnership Agreement</li>
-              <li>Tax Identification Number (TIN) or relevant tax certificate</li>
-              <li>Recent financial statements or bank reference (where applicable)</li>
-            </ul>
-          </div>
-        </div>
+        <h2 class="section">What Makes This Different?</h2>
+
+        <ul class="list">
+          <li>One application. No more filling out forms for every lender.</li>
+          <li>Secure document upload. Every file goes into your private folder with a full audit trail.</li>
+          <li>Eligibility-based payments. You only pay when your documents are verified.</li>
+          <li>Transparent lender matches. You’ll see not only who fits, but why.</li>
+          <li>AI-powered precision. Matches scored across industry, credit, collateral, loan size, and geography.</li>
+        </ul>
 
         <hr class="hr">
 
-        <h2 class="section">
-          <span class="badge" aria-hidden="true">Important</span>
-          <span style="margin-left:8px;">2. Important Notice</span>
-        </h2>
-        <div class="banner" role="note" aria-label="Important Notice">
-          If you are not ready to provide these documents, we strongly recommend that you do not
-          start filling in the application form yet.<br><br>
-          Your application cannot be processed or reviewed until the required documentation is submitted.
-        </div>
+        <h2 class="section">Frequently Asked Questions (Investor Objections, Answered)</h2>
 
-        <h2 class="section">3. By preparing your documents in advance, you will</h2>
-        <ol class="numlist">
-          <li>Ensure a smooth and faster application process</li>
-          <li>Avoid unnecessary delays or interruptions</li>
-          <li>Increase the likelihood of timely approval</li>
-        </ol>
-
-        <a class="cta" href="https://maxv-tor.github.io/afg-mvp/index.html">Start Application</a>
-        <p class="small muted" style="margin-top:10px;">
-          You can return to this page at any time to review the requirements.
+        <h3 class="faq-question">How do I know I’ll be matched with the right lender?</h3>
+        <p class="faq-answer">
+          Because this isn’t a “lead list.” Our matching engine analyzes seven real-world criteria lenders use to approve capital: industry, loan amount, term, credit, collateral, geography, and specialization. Every match comes with a written explanation. You see the reasoning, not just a name.
         </p>
-      </div>
-    </div>
-  </div>
-</body>
-</html>
+
+        <h3 class="faq-question">Is my information safe?</h3>
+        <p class="faq-answer">
+          Yes. Every agreement is locked with a cryptographic fingerprint (SHA-256). Your documents are stored in a private, sanitized Google Drive folder that only you control. Payments run through Stripe. Every step leaves a trail — compliance-ready from day one.
+        </p>
+
+        <h3 class="faq-question">Is this just another expensive tool?</h3>
+        <p class="faq-answer">
+          No. In fact, it saves you money. Other platforms charge up-front and leave you chasing refunds. We only take payment when you’re lender-ready. The real cost isn’t the small application fee — it’s the lost deal flow and wasted weeks if you go with the wrong partner.
+        </p>
+
+        <h3 class="faq-question">Will I get stuck in a black box?</h3>
+        <p class="faq-answer">
+          Never. Transparency is the point. You’ll see your top matches, why they fit, and how your profile scored. It’s the opposite of the bank “black box” experience.
+        </p>
+
+        <h3 class="faq-question">What kind of investors use this?</h3>
+        <ul class="list">
+          <li>Real estate developers closing time-sensitive deals</li>
+          <li>Family offices diversifying into private credit</li>
+          <li>Healthcare and manufacturing companies scaling up</li>
+          <li>Renewable energy projects leveraging tax credits</li>
+          <li>High-net-worth investors seeking structured finance</li>
+        </ul>
+
+        <hr class="hr">
+
+        <h2 class="section">Why Accredited Investors Trust Us</h2>
+
+        <ul class="list">
+          <li>Stripe Secure Payments</li>
+          <li>Google Drive Document Security</li>
+          <li>SHA-256 Agreement Integrity</li>
+          <li>Audit-Ready Lending Platform</li>
+        </ul>
+
+        <h2 class="section">Take Back Control of Your Deal Flow</h2>
+
+        <p>
+          Banks aren’t built for speed. This is.
+        </p>
+
+        <a class="cta" href="https://maxv-tor.github.io/afg-mvp/index.html">Start My Application</a>
+        <a class="secondary-cta" href="#how
