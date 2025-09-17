@@ -282,30 +282,67 @@
           </div>
         </section>
 
-        <!-- Step 4: Project Location -->
-        <section class="step" data-step="3">
-          <h2>Step 4 -- Project Location</h2>
-          <p class="desc">Where the project will take place.</p>
-          <div class="grid grid-2">
-            <div class="grid-item" style="grid-column:1/-1">
-              <label for="project_address">Project Address</label>
-              <input type="text" id="project_address" name="project_address" autocomplete="street-address" />
-            </div>
-            <div>
-              <label for="city">City</label>
-              <input type="text" id="city" name="city" autocomplete="address-level2" />
-            </div>
-            <div>
-              <label for="state">State/Region</label>
-              <input type="text" id="state" name="state" autocomplete="address-level1" />
-            </div>
-            <div>
-              <label for="zip">ZIP/Postal Code</label>
-              <input type="text" id="zip" name="zip" autocomplete="postal-code" />
-            </div>
-          </div>
-        </section>
-
+<!-- Step 4: Project Location -->
+<section class="step" data-step="3">
+  <h2>Step 4 -- Project Location</h2>
+  <p class="desc">Where the project will take place.</p>
+  <div class="grid grid-2">
+    <div class="grid-item" style="grid-column:1/-1">
+      <label for="project_address">Project Address</label>
+      <input type="text" id="project_address" name="project_address" autocomplete="street-address" />
+    </div>
+    <div>
+      <label for="city">City</label>
+      <input type="text" id="city" name="city" autocomplete="address-level2" />
+    </div>
+    <div>
+      <label for="state">State/Region</label>
+      <input type="text" id="state" name="state" autocomplete="address-level1" />
+    </div>
+    <div>
+      <label for="zip">ZIP/Postal Code</label>
+      <input type="text" id="zip" name="zip" autocomplete="postal-code" />
+    </div>
+    <div>
+      <label for="country">Country<span class="req">*</span></label>
+      <select id="country" name="country" autocomplete="country-name" required>
+        <option value="">Select Country</option>
+        <option value="Canada">Canada</option>
+        <option value="United States">United States</option>
+        <option value="United Kingdom">United Kingdom</option>
+        <option value="Australia">Australia</option>
+        <option value="Germany">Germany</option>
+        <option value="France">France</option>
+        <option value="Switzerland">Switzerland</option>
+        <option value="Netherlands">Netherlands</option>
+        <option value="Belgium">Belgium</option>
+        <option value="Austria">Austria</option>
+        <option value="Sweden">Sweden</option>
+        <option value="Norway">Norway</option>
+        <option value="Denmark">Denmark</option>
+        <option value="Finland">Finland</option>
+        <option value="Ireland">Ireland</option>
+        <option value="Italy">Italy</option>
+        <option value="Spain">Spain</option>
+        <option value="Portugal">Portugal</option>
+        <option value="Japan">Japan</option>
+        <option value="Singapore">Singapore</option>
+        <option value="Hong Kong">Hong Kong</option>
+        <option value="New Zealand">New Zealand</option>
+        <option value="South Africa">South Africa</option>
+        <option value="Mexico">Mexico</option>
+        <option value="Brazil">Brazil</option>
+        <option value="India">India</option>
+        <option value="China">China</option>
+        <option value="South Korea">South Korea</option>
+        <option value="Israel">Israel</option>
+        <option value="United Arab Emirates">United Arab Emirates</option>
+        <option value="Other">Other</option>
+      </select>
+      <div class="error" data-error-for="country">Please select a country.</div>
+    </div>
+  </div>
+</section>
         <!-- Step 5: Preferences & Collateral -->
         <section class="step" data-step="4">
           <h2>Step 5 -- Preferences & Collateral</h2>
@@ -435,6 +472,10 @@
           if (!loanTerm) { showError('loan_term', true); ok = false; } else showError('loan_term', false);
           if (!purpose) { showError('funding_purpose', true); ok = false; } else showError('funding_purpose', false);
         }
+         if (idx === 3) {
+         const country = form.country.value;
+         if (!country) { showError('country', true); ok = false; } else showError('country', false);
+       }
         if (idx === 5) {
           const accepted = form.user_agreement_accepted.checked;
           if (!accepted) { showError('user_agreement_accepted', true); ok = false; }
