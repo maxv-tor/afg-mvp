@@ -98,6 +98,24 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     /* ADDED: Disabled step dot styles */
     .step-dot.disabled { opacity: 0.3; cursor: not-allowed !important; }
+    /* ADDED: Footer styles */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .footer a:hover {
+      color: var(--primary-600);
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -420,6 +438,12 @@
         </div>
       </form>
     </div>
+    
+    <!-- ADDED: Footer -->
+    <footer class="footer">
+      <p>Need help?<br>
+      Contact our <a href="mailto:hello@altfundsglobal.com">support team</a> if you have any questions about your application.</p>
+    </footer>
   </div>
 
   <script>
@@ -689,7 +713,7 @@
           el.innerHTML = html;
         } catch (e) {
           console.error(e);
-          el.innerHTML = '<div style="color:#d92d20">Failed to load the agreement. Ensure the document is shared as "Anyone with the link — Viewer".</div>';
+          el.innerHTML = '<div style="color:#d92d20">Failed to load the agreement. Ensure the document is shared as "Anyone with the link -- Viewer".</div>';
         }
       }
       loadAgreement();
