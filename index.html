@@ -269,16 +269,35 @@
                 <option>No</option>
               </select>
             </div>
-            <div class="grid-item" style="grid-column:1/-1">
-              <label for="local_lender_pref">Preference for Local Lender (1–5)</label>
-              <div class="range-row">
-                <span style="font-size:13px;color:#666">1</span>
-                <input type="range" id="local_lender_pref" name="local_lender_pref" min="1" max="5" step="1" value="3" />
-                <span style="font-size:13px;color:#666">5</span>
-                <output id="local_lender_pref_out">3</output>
-              </div>
-              <div class="hint">1 = I don't really care, 5 = I only want to work with local lenders</div>
-            </div>
+            
+           <div class="grid-item" style="grid-column:1/-1">
+  <label for="local_lender_pref">Preference for Local Lender</label>
+  <div class="range-row">
+    <span style="font-size:13px;color:#666">1</span>
+    <input type="range" id="local_lender_pref" name="local_lender_pref" min="1" max="5" step="1" value="3" />
+    <span style="font-size:13px;color:#666">5</span>
+    <output id="local_lender_pref_out">3</output>
+  </div>
+  <div class="range-options" style="margin-top: 10px; font-size: 14px;">
+    <div class="option" data-value="1" style="display: none; color: #444;">
+      <strong>1:</strong> I don't mind working with lenders all over the world
+    </div>
+    <div class="option" data-value="2" style="display: none; color: #444;">
+      <strong>2:</strong> Local lenders are good but I don't mind global lenders
+    </div>
+    <div class="option" data-value="3" style="display: block; color: #444;">
+      <strong>3:</strong> Any lender that suits my needs
+    </div>
+    <div class="option" data-value="4" style="display: none; color: #444;">
+      <strong>4:</strong> I prefer local lenders vs global
+    </div>
+    <div class="option" data-value="5" style="display: none; color: #444;">
+      <strong>5:</strong> I only want to work with local lenders
+    </div>
+  </div>
+</div>
+
+            
           </div>
         </section>
 
@@ -683,6 +702,30 @@
         range.addEventListener('input', sync);
         sync();
       }
+      // Update lender preference options
+const lenderOptions = document.querySelectorAll('.range-options .option');
+if (range && lenderOptions.length > 0) {
+  function updateLenderOption() {
+    const value = range.value;
+    
+    // Hide all options
+    lenderOptions.forEach(option => {
+      option.style.display = 'none';
+    });
+    
+    // Show selected option
+    const selectedOption = document.querySelector(`.range-options .option[data-value="${value}"]`);
+    if (selectedOption) {
+      selectedOption.style.display = 'block';
+    }
+  }
+  
+  // Update on slider change
+  range.addEventListener('input', updateLenderOption);
+  
+  // Initialize
+  updateLenderOption();
+}
     })();
   </script>
 </body>
