@@ -154,6 +154,41 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+    
+    /* Added style for the success callout */
+    .success-callout {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .success-callout-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .success-callout-text {
+      flex: 1;
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .success-callout-text strong {
+      color: var(--primary);
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -208,6 +243,15 @@
   <li>Resume</li>
   <li>Audited Tax Statements for the Past 3 Years</li>
 </ul>
+
+          <!-- Added success callout with the client's phrase -->
+          <div class="success-callout">
+            <div class="success-callout-icon">✓</div>
+            <div class="success-callout-text">
+              People who provide <strong>ALL</strong> of the following documentation have a <strong>2.3x higher likelihood</strong> of matching to a lender
+            </div>
+          </div>
+
           <table class="document-table" id="documentsTable">
             <thead>
               <tr>
